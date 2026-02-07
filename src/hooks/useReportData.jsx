@@ -139,7 +139,7 @@ export const getCurrentPeriod = () => {
     const now = new Date();
     return {
         year: now.getFullYear(),
-        month: now.toLocaleString('default', { month: 'long' })
+        month: now.getMonth() + 1
     };
 };
 
