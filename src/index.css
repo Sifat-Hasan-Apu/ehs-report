@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-200 text-slate-900 font-sans antialiased selection:bg-brand-500 selection:text-white;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/95 backdrop-blur-xl border border-white/50 shadow-lg;
+  }
+
+  .glass-card {
+    @apply bg-white backdrop-blur-xl border border-white/60 shadow-xl transition-all duration-300 hover:shadow-2xl;
+  }
+}
+
+/* --- PRINT & PDF PRODUCTION STYLES --- */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+    /* WE HANDLE MARGINS VIA PADDING IN .report-container */
+  }
+
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: white;
+  }
+
+  /* Hide UI Elements */
+  .no-print,
+  button,
+  select,
+  nav,
+  aside,
+  .sticky {
+    display: none !important;
+  }
+}
+
+/* 
+  Container simulating A4 paper on screen & PDF 
+  This is the key to WYSIWYG consistency
+*/
+.report-wrapper {
+  background-color: #525659;
+  /* Standard PDF viewer background */
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+body.pdf-generating .report-wrapper {
+  padding: 0;
+  background-color: white;
+  display: block;
+}
+
+.report-container {
+  width: 210mm;
+  min-height: 297mm;
+  background: white;
+  padding: 20mm;
+  /* STANDARD A4 MARGIN */
+  margin: 0 auto;
+  box-sizing: border-box;
+  position: relative;
+  /* Reset tailwind defaults inside */
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  color: #333;
+}
+
+/* Force specific behavior during generation */
+body.pdf-generating .report-container {
+  margin: 0 !important;
+  width: 210mm !important;
+  min-height: 297mm !important;
+  box-shadow: none !important;
+}
+
+/* VIEW TOGGLING (Show Web by default, Show Print only when generating) */
+.print-view {
+  display: none;
+}
+
+body.pdf-generating .print-view {
+  display: block !important;
+}
+
+body.pdf-generating .web-view {
+  display: none !important;
+}
+
+/* SECTION HANDLING */
+.report-section {
+  margin-bottom: 30px;
+  break-inside: avoid;
+  /* Keep small sections together */
+  page-break-inside: avoid;
+}
+
+.report-section.large {
+  break-inside: auto;
+  /* Allow large sections to break */
+}
+
+/* TABLE STYLING - CRITICAL FOR PDF HEADER REPEATS */
+.ehs-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  font-size: 10pt;
+}
+
+.ehs-table th,
+.ehs-table td {
+  border: 1px solid #e2e8f0;
+  padding: 10px;
+  text-align: left;
+}
+
+.ehs-table thead {
+  display: table-header-group !important;
+  /* REPEATS HEADER ON NEW PAGE */
+  background-color: #f8f9fa;
+  break-inside: avoid;
+}
+
+.ehs-table tr {
+  page-break-inside: avoid !important;
+  /* PREVENTS ROW CUTTING */
+  break-inside: avoid !important;
+}
+
+/* UTILITIES */
+.page-break {
+  page-break-before: always;
+  break-before: page;
+}
+
+.text-dark {
+  color: #0f172a !important;
+}
+
+/* Reset Grid for Print */
+@media print,
+screen {
+  body.pdf-generating .grid-print-2 {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px !important;
+  }
+}
