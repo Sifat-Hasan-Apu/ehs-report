@@ -29,50 +29,50 @@ const WebLayout = ({ data, month }) => {
     const [zoomLevel, setZoomLevel] = useState(1);
 
     return (
-        <div className="max-w-5xl mx-auto space-y-8 pb-20 p-6">
+        <div className="max-w-5xl mx-auto space-y-6 md:space-y-8 pb-16 md:pb-20 p-0 md:p-6">
 
             {/* 1. Header Card (Minimal & Formal Redesign) */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden relative">
                 {/* Decorative Top Accent (Minimal) */}
                 <div className="absolute top-0 left-0 w-full h-1 bg-slate-900"></div>
 
-                <div className="p-8 md:p-12 text-center relative z-10">
+                <div className="p-5 md:p-12 text-center relative z-10">
                     {/* Badge */}
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-[10px] font-bold uppercase tracking-widest mb-6 border border-slate-200">
+                    <div className="inline-flex items-center gap-1.5 md:gap-2 px-2.5 md:px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-[8px] md:text-[10px] font-bold uppercase tracking-widest mb-4 md:mb-6 border border-slate-200">
                         <span className="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
                         Monthly EHS Performance Report
                     </div>
 
                     {/* Main Title (Clean Typography) */}
-                    <h1 className="text-4xl md:text-5xl font-black text-slate-800 tracking-tight mb-3">
+                    <h1 className="text-3xl md:text-5xl font-black text-slate-800 tracking-tight mb-2 md:mb-3">
                         {month.split(' ')[0]} <span className="text-slate-400 font-light">{month.split(' ')[1]}</span>
                     </h1>
 
                     {/* Subtitle / Context */}
-                    <div className="flex items-center justify-center gap-2 text-slate-500 text-sm font-medium mb-12">
+                    <div className="flex items-center justify-center gap-2 text-slate-500 text-xs md:text-sm font-medium mb-6 md:mb-12">
                         <span>{data?.basicInfo?.projectName || 'Project Site'}</span>
                         <span className="w-1 h-1 rounded-full bg-slate-300"></span>
                         <span>{data?.basicInfo?.location || 'Location'}</span>
                     </div>
 
                     {/* Key Stats Grid (Formal Layout) */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-slate-100 pt-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 border-t border-slate-100 pt-5 md:pt-8">
                         <div className="text-center group hover:-translate-y-0.5 transition-transform duration-300">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 group-hover:text-brand-500 transition-colors">Total Manpower</p>
-                            <p className="text-3xl font-black text-slate-800 tabular-nums">{data?.basicInfo?.manpower?.total || '0'}</p>
+                            <p className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 md:mb-2 group-hover:text-brand-500 transition-colors">Total Manpower</p>
+                            <p className="text-2xl md:text-3xl font-black text-slate-800 tabular-nums">{data?.basicInfo?.manpower?.total || '0'}</p>
                         </div>
                         <div className="text-center group hover:-translate-y-0.5 transition-transform duration-300">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 group-hover:text-emerald-500 transition-colors">Safe Man-Hours</p>
-                            <p className="text-3xl font-black text-emerald-600 tabular-nums">{data?.kpis?.manHours?.current ? (data.kpis.manHours.current / 1000).toFixed(1) + 'k' : '0'}</p>
+                            <p className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 md:mb-2 group-hover:text-emerald-500 transition-colors">Safe Man-Hours</p>
+                            <p className="text-2xl md:text-3xl font-black text-emerald-600 tabular-nums">{data?.kpis?.manHours?.current ? (data.kpis.manHours.current / 1000).toFixed(1) + 'k' : '0'}</p>
                         </div>
                         <div className="text-center group hover:-translate-y-0.5 transition-transform duration-300">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 group-hover:text-blue-500 transition-colors">LTI Free Days</p>
-                            <p className="text-3xl font-black text-blue-600 tabular-nums">1,240</p>
+                            <p className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 md:mb-2 group-hover:text-blue-500 transition-colors">LTI Free Days</p>
+                            <p className="text-2xl md:text-3xl font-black text-blue-600 tabular-nums">1,240</p>
                         </div>
                         <div className="text-center group hover:-translate-y-0.5 transition-transform duration-300">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 group-hover:text-purple-500 transition-colors">Compliance Score</p>
+                            <p className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 md:mb-2 group-hover:text-purple-500 transition-colors">Compliance Score</p>
                             <div className="flex items-center justify-center gap-2">
-                                <p className="text-3xl font-black text-slate-800 tabular-nums">98%</p>
+                                <p className="text-2xl md:text-3xl font-black text-slate-800 tabular-nums">98%</p>
                             </div>
                         </div>
                     </div>
@@ -145,20 +145,20 @@ const WebLayout = ({ data, month }) => {
             {/* Section 3: KPIs */}
             <div className="pt-4">
                 <SectionHeader icon={Clock} title="Key Performance Indicators" sectionNum="3" bgClass="bg-purple-50" colorClass="text-purple-600" />
-                <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-8">
+                <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-4 md:p-8">
                     {/* 1. Man Hours */}
-                    <div className="mb-8">
-                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">Man-Hours Statistics</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="p-4 bg-slate-50/50 rounded-lg border border-slate-100 flex justify-between items-center group">
-                                <span className="text-sm font-semibold text-slate-600">Current Month</span>
-                                <span className="text-2xl font-black text-slate-800 tabular-nums group-hover:text-purple-600 transition-colors">
+                    <div className="mb-6 md:mb-8">
+                        <h4 className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 md:mb-4 border-b border-slate-100 pb-2">Man-Hours Statistics</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                            <div className="p-3 md:p-4 bg-slate-50/50 rounded-lg border border-slate-100 flex justify-between items-center group">
+                                <span className="text-xs md:text-sm font-semibold text-slate-600">Current Month</span>
+                                <span className="text-xl md:text-2xl font-black text-slate-800 tabular-nums group-hover:text-purple-600 transition-colors">
                                     {data?.kpis?.manHours?.current?.toLocaleString() || '0'}
                                 </span>
                             </div>
-                            <div className="p-4 bg-slate-50/50 rounded-lg border border-slate-100 flex justify-between items-center group">
-                                <span className="text-sm font-semibold text-slate-600">Cumulative (Project)</span>
-                                <span className="text-2xl font-black text-slate-800 tabular-nums group-hover:text-purple-600 transition-colors">
+                            <div className="p-3 md:p-4 bg-slate-50/50 rounded-lg border border-slate-100 flex justify-between items-center group">
+                                <span className="text-xs md:text-sm font-semibold text-slate-600">Cumulative (Project)</span>
+                                <span className="text-xl md:text-2xl font-black text-slate-800 tabular-nums group-hover:text-purple-600 transition-colors">
                                     {data?.kpis?.manHours?.cumulative?.toLocaleString() || '0'}
                                 </span>
                             </div>
@@ -166,34 +166,34 @@ const WebLayout = ({ data, month }) => {
                     </div>
 
                     {/* 2. Lagging Indicators */}
-                    <div className="mb-8">
-                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-100 pb-2">Lagging Indicators</h4>
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                            <div className="text-center p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-                                <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">FATALITY</div>
-                                <div className="text-xl font-black text-slate-800">0</div>
+                    <div className="mb-6 md:mb-8">
+                        <h4 className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 md:mb-4 border-b border-slate-100 pb-2">Lagging Indicators</h4>
+                        <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-4">
+                            <div className="text-center p-2 md:p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                                <div className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase mb-1">FATALITY</div>
+                                <div className="text-lg md:text-xl font-black text-slate-800">0</div>
                             </div>
-                            <div className="text-center p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-                                <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">LTI</div>
-                                <div className={`text-xl font-black ${data?.kpis?.laggingIndicators?.lti > 0 ? 'text-red-500' : 'text-slate-800'}`}>
+                            <div className="text-center p-2 md:p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                                <div className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase mb-1">LTI</div>
+                                <div className={`text-lg md:text-xl font-black ${data?.kpis?.laggingIndicators?.lti > 0 ? 'text-red-500' : 'text-slate-800'}`}>
                                     {data?.kpis?.laggingIndicators?.lti || 0}
                                 </div>
                             </div>
-                            <div className="text-center p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-                                <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">LTIFR</div>
-                                <div className="text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.ltifr || '0.0'}</div>
+                            <div className="text-center p-2 md:p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                                <div className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase mb-1">LTIFR</div>
+                                <div className="text-lg md:text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.ltifr || '0.0'}</div>
                             </div>
-                            <div className="text-center p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-                                <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">TRIR</div>
-                                <div className="text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.trir || '0.0'}</div>
+                            <div className="text-center p-2 md:p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                                <div className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase mb-1">TRIR</div>
+                                <div className="text-lg md:text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.trir || '0.0'}</div>
                             </div>
-                            <div className="text-center p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-                                <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">FIRST AID</div>
-                                <div className="text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.firstAid || 0}</div>
+                            <div className="text-center p-2 md:p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                                <div className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase mb-1">FIRST AID</div>
+                                <div className="text-lg md:text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.firstAid || 0}</div>
                             </div>
-                            <div className="text-center p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-                                <div className="text-[10px] font-bold text-slate-400 uppercase mb-1">NEAR MISS</div>
-                                <div className="text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.nearMiss || 0}</div>
+                            <div className="text-center p-2 md:p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                                <div className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase mb-1">NEAR MISS</div>
+                                <div className="text-lg md:text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.nearMiss || 0}</div>
                             </div>
                         </div>
                     </div>

@@ -16,6 +16,22 @@
   .glass-card {
     @apply bg-white backdrop-blur-xl border border-white/60 shadow-xl transition-all duration-300 hover:shadow-2xl;
   }
+
+  /* Hide scrollbar for horizontal tabs */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Touch-friendly tap targets */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 /* --- PRINT & PDF PRODUCTION STYLES --- */

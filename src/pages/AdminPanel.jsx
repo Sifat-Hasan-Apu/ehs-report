@@ -142,9 +142,54 @@ const AdminPanel = () => {
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 animate-in fade-in duration-500">
-            {/* Sidebar Navigation */}
-            <div className="md:col-span-1 space-y-4">
+        <div className="flex flex-col md:grid md:grid-cols-4 gap-4 md:gap-6 animate-in fade-in duration-500">
+            {/* Mobile: Dropdown Section Selector */}
+            <div className="md:hidden sticky top-14 z-30 bg-slate-200 -mx-3 px-3 pb-3 pt-2">
+                {/* Period Selector - Compact */}
+                <div className="flex items-center gap-2 mb-3 bg-white rounded-xl p-3 shadow-sm border border-slate-100">
+                    <Calendar className="w-4 h-4 text-brand-500 flex-shrink-0" />
+                    <select
+                        value={selectedMonth}
+                        onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+                        className="flex-1 bg-slate-50 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg p-2 outline-none"
+                    >
+                        {MONTH_NAMES.map((name, idx) => (
+                            <option key={idx + 1} value={idx + 1}>{name}</option>
+                        ))}
+                    </select>
+                    <select
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                        className="w-20 bg-slate-50 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg p-2 outline-none"
+                    >
+                        {[2024, 2025, 2026, 2027, 2028].map(year => (
+                            <option key={year} value={year}>{year}</option>
+                        ))}
+                    </select>
+                </div>
+                {/* Section Dropdown Selector */}
+                <div className="relative">
+                    <select
+                        value={activeSection}
+                        onChange={(e) => setActiveSection(parseInt(e.target.value))}
+                        className="w-full appearance-none bg-brand-600 text-white text-sm font-bold rounded-xl p-3 pr-10 shadow-md focus:ring-2 focus:ring-brand-400 outline-none cursor-pointer"
+                    >
+                        {SECTIONS.map((item, idx) => (
+                            <option key={idx} value={idx} className="bg-white text-slate-800">
+                                {idx + 1}. {item}
+                            </option>
+                        ))}
+                    </select>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            {/* Desktop: Sidebar Navigation */}
+            <div className="hidden md:block md:col-span-1 space-y-4">
                 {/* Year/Month Selector */}
                 <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
                     <div className="flex items-center gap-2 mb-4">
@@ -210,23 +255,23 @@ const AdminPanel = () => {
             {/* Main Editor Area */}
             <div className="md:col-span-3">
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                    <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                    <div className="p-4 md:p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                         <div>
-                            <h2 className="text-xl font-bold text-slate-800">{SECTIONS[activeSection]}</h2>
-                            <p className="text-sm text-slate-500">Section {activeSection + 1}</p>
+                            <h2 className="text-lg md:text-xl font-bold text-slate-800">{SECTIONS[activeSection]}</h2>
+                            <p className="text-xs md:text-sm text-slate-500 hidden md:block">Section {activeSection + 1}</p>
                         </div>
                         {activeSection !== 4 && ( // Hide Save button for Incidents tab as they save individually
                             <button
                                 onClick={handleSave}
-                                className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm shadow-brand-200"
+                                className="flex items-center gap-2 px-3 md:px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm shadow-brand-200"
                             >
                                 <Save className="w-4 h-4" />
-                                Save Changes
+                                <span className="hidden md:inline">Save Changes</span>
                             </button>
                         )}
                     </div>
 
-                    <div className="p-8">
+                    <div className="p-4 md:p-8">
                         {activeSection === 0 && (
                             <div className="space-y-6 max-w-2xl">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -2321,6 +2366,20 @@ const AdminPanel = () => {
                             />
                         )}
                     </div>
+                </div>
+            </div>
+
+            {/* Developer Credit */}
+            <div className="md:col-span-4 mt-4 pb-4 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-slate-100">
+                    <svg className="w-4 h-4 text-brand-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    <span className="text-xs text-slate-400">Developed by</span>
+                    <span className="text-sm font-semibold text-slate-700">Sifat Hasan Apu</span>
                 </div>
             </div>
         </div>

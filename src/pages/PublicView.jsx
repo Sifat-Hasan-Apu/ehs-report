@@ -92,17 +92,17 @@ const PublicView = () => {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
             {/* Toolbar / Filter Bar */}
-            <div className="glass p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 sticky top-20 z-40 transition-shadow duration-300 hover:shadow-md">
-                <div className="flex items-center gap-3">
-                    <div className="w-1.5 h-6 bg-brand-500 rounded-full shadow-lg shadow-brand-200" />
-                    <h2 className="text-lg font-bold text-slate-800 tracking-tight">Report Browser</h2>
+            <div className="glass p-3 md:p-4 rounded-xl md:rounded-2xl flex flex-row items-center justify-between gap-3 md:gap-4 sticky top-14 md:top-20 z-40 transition-shadow duration-300 hover:shadow-md">
+                <div className="flex items-center gap-2 md:gap-3">
+                    <div className="w-1 md:w-1.5 h-5 md:h-6 bg-brand-500 rounded-full shadow-lg shadow-brand-200" />
+                    <h2 className="text-sm md:text-lg font-bold text-slate-800 tracking-tight">Report Browser</h2>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 md:gap-3">
                     <select
-                        className="bg-slate-50 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 block w-48 p-2.5 transition-all outline-none"
+                        className="bg-slate-50 border border-slate-200 text-slate-700 text-xs md:text-sm font-medium rounded-lg focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 block w-32 md:w-48 p-2 md:p-2.5 transition-all outline-none"
                         value={`${selectedYear}-${selectedMonth}`}
                         onChange={handlePeriodChange}
                     >
@@ -123,12 +123,12 @@ const PublicView = () => {
                         onClick={handleDownload}
                         disabled={isDownloading}
                         title="Download PDF"
-                        className="p-2.5 text-slate-500 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors border border-slate-200/50 hover:border-brand-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="p-2 md:p-2.5 text-slate-500 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors border border-slate-200/50 hover:border-brand-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                         {isDownloading ? (
-                            <Loader2 className="w-5 h-5 animate-spin text-brand-500" />
+                            <Loader2 className="w-4 h-4 md:w-5 md:h-5 animate-spin text-brand-500" />
                         ) : (
-                            <Download className="w-5 h-5" />
+                            <Download className="w-4 h-4 md:w-5 md:h-5" />
                         )}
                     </button>
                 </div>
