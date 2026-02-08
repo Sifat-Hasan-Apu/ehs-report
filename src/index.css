@@ -319,6 +319,34 @@ screen {
   border-bottom: 1px solid #ccc;
 }
 
+.pdf-objectives-list {
+  margin: 0;
+  padding-left: 0;
+  list-style: disc;
+  list-style-position: inside;
+}
+
+.pdf-objectives-list ::marker {
+  color: #3b82f6;
+  font-size: 0.95em;
+}
+
+.pdf-objectives-item {
+  font-size: 10pt;
+  line-height: 1.5;
+  color: #475569;
+  margin: 0 0 12px 0;
+  padding-left: 0;
+  text-indent: -6px;
+}
+
+.pdf-objectives-empty {
+  font-size: 10pt;
+  color: #94a3b8;
+  font-style: italic;
+  margin: 0;
+}
+
 /* PDF Tables - Corporate Style */
 .pdf-table {
   width: 100%;

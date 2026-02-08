@@ -102,7 +102,15 @@ const PublicView = () => {
                 pdf.setFontSize(8);
                 pdf.setTextColor(100, 100, 100);
                 const footerText = `Page ${i} of ${totalPages}`;
-                pdf.text(footerText, pageWidth / 2, pageHeight - 8, { align: 'center' });
+                pdf.text(footerText, pageWidth / 2, pageHeight - 10, { align: 'center' });
+
+                // Add Confidential Text (Left)
+                pdf.setTextColor(200, 0, 0); // Red color for Confidential
+                pdf.text("CONFIDENTIAL - For Internal Use Only", 20, pageHeight - 10, { align: 'left' });
+
+                // Add Developer Credit (Right)
+                pdf.setTextColor(100, 100, 100); // Gray color
+                pdf.text("Developed by Sifat Hasan Apu", pageWidth - 20, pageHeight - 10, { align: 'right' });
             }
 
             await pdf.save();

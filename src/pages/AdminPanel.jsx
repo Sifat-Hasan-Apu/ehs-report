@@ -647,6 +647,7 @@ const AdminPanel = () => {
                                             className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
                                         />
                                     </div>
+
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium text-slate-700">Cumulative Man-Hours</label>
                                         <input
@@ -657,6 +658,34 @@ const AdminPanel = () => {
                                                 manHours: { ...p.manHours, cumulative: Number(e.target.value) }
                                             }))}
                                             className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-700">LTI Free Days</label>
+                                        <input
+                                            type="number"
+                                            value={formData.laggingIndicators?.ltiFreeDays || ''}
+                                            onChange={(e) => setFormData(p => ({
+                                                ...p,
+                                                laggingIndicators: { ...p.laggingIndicators, ltiFreeDays: Number(e.target.value) }
+                                            }))}
+                                            className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                                            placeholder="e.g. 1240"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-700">Compliance Score (%)</label>
+                                        <input
+                                            type="number"
+                                            value={formData.complianceScore || ''}
+                                            onChange={(e) => setFormData(p => ({
+                                                ...p,
+                                                complianceScore: Number(e.target.value)
+                                            }))}
+                                            className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
+                                            placeholder="e.g. 98"
+                                            min="0"
+                                            max="100"
                                         />
                                     </div>
                                 </div>
@@ -1086,7 +1115,7 @@ const AdminPanel = () => {
                                                                     <div className="group relative">
                                                                         {finding.nonCompliance?.image ? (
                                                                             <div className="relative aspect-video rounded-2xl overflow-hidden border border-slate-200 shadow-sm group-hover:shadow-md transition-all">
-                                                                                <img src={finding.nonCompliance.image} className="w-full h-full object-cover" alt="Positive Observation" />
+                                                                                <img src={finding.nonCompliance.image} className="w-full h-full object-contain bg-slate-50" alt="Positive Observation" />
                                                                                 <button
                                                                                     onClick={() => {
                                                                                         const updated = [...formData.findings];
@@ -1154,7 +1183,7 @@ const AdminPanel = () => {
                                                                     <div className="group relative">
                                                                         {finding.nonCompliance?.image ? (
                                                                             <div className="relative aspect-video rounded-2xl overflow-hidden border border-slate-200 shadow-sm group-hover:shadow-md transition-all">
-                                                                                <img src={finding.nonCompliance.image} className="w-full h-full object-cover" alt="Unsafe Condition" />
+                                                                                <img src={finding.nonCompliance.image} className="w-full h-full object-contain bg-slate-50" alt="Unsafe Condition" />
                                                                                 <button
                                                                                     onClick={() => {
                                                                                         const updated = [...formData.findings];
@@ -1223,7 +1252,7 @@ const AdminPanel = () => {
                                                                     <div className="group relative">
                                                                         {finding.nonCompliance?.image ? (
                                                                             <div className="relative aspect-video rounded-2xl overflow-hidden border border-slate-200 shadow-sm group-hover:shadow-md transition-all">
-                                                                                <img src={finding.nonCompliance.image} className="w-full h-full object-cover" alt="Before" />
+                                                                                <img src={finding.nonCompliance.image} className="w-full h-full object-contain bg-slate-50" alt="Before" />
                                                                                 <button
                                                                                     onClick={() => {
                                                                                         const updated = [...formData.findings];
@@ -1293,7 +1322,7 @@ const AdminPanel = () => {
                                                                 <div className="group relative">
                                                                     {finding.correctiveAction?.image ? (
                                                                         <div className="relative aspect-video rounded-2xl overflow-hidden border border-slate-200 shadow-sm group-hover:shadow-md transition-all">
-                                                                            <img src={finding.correctiveAction.image} className="w-full h-full object-cover" alt="After" />
+                                                                            <img src={finding.correctiveAction.image} className="w-full h-full object-contain bg-slate-50" alt="After" />
                                                                             <button
                                                                                 onClick={() => {
                                                                                     const updated = [...formData.findings];
@@ -2107,7 +2136,7 @@ const AdminPanel = () => {
                                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                                 {(formData.training?.evidence || []).map((ev, idx) => (
                                                     <div key={ev.id || idx} className="relative group bg-white rounded-xl border border-slate-200 overflow-hidden">
-                                                        <img src={ev.imageUrl} alt={ev.caption || 'Evidence'} className="w-full h-32 object-cover" />
+                                                        <img src={ev.imageUrl} alt={ev.caption || 'Evidence'} className="w-full h-32 object-contain bg-slate-50" />
                                                         <div className="p-2">
                                                             <input type="text" placeholder="Caption..." value={ev.caption || ''} onChange={(e) => {
                                                                 const updated = [...(formData.training?.evidence || [])];
@@ -2251,7 +2280,7 @@ const AdminPanel = () => {
                                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                                 {(formData.emergencyPreparedness?.evidence || []).map((ev, idx) => (
                                                     <div key={ev.id || idx} className="relative group bg-white rounded-xl border border-slate-200 overflow-hidden">
-                                                        <img src={ev.imageUrl} alt={ev.caption || 'Evidence'} className="w-full h-32 object-cover" />
+                                                        <img src={ev.imageUrl} alt={ev.caption || 'Evidence'} className="w-full h-32 object-contain bg-slate-50" />
                                                         <div className="p-2">
                                                             <input type="text" placeholder="Caption..." value={ev.caption || ''} onChange={(e) => {
                                                                 const updated = [...(formData.emergencyPreparedness?.evidence || [])];
@@ -2451,7 +2480,7 @@ const AdminPanel = () => {
                                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                                 {(formData.campaigns?.evidence || []).map((ev, idx) => (
                                                     <div key={ev.id || idx} className="relative group bg-white rounded-xl border border-slate-200 overflow-hidden">
-                                                        <img src={ev.imageUrl} alt={ev.caption || 'Evidence'} className="w-full h-32 object-cover" />
+                                                        <img src={ev.imageUrl} alt={ev.caption || 'Evidence'} className="w-full h-32 object-contain bg-slate-50" />
                                                         <div className="p-2">
                                                             <input type="text" placeholder="Caption..." value={ev.caption || ''} onChange={(e) => {
                                                                 const updated = [...(formData.campaigns?.evidence || [])];

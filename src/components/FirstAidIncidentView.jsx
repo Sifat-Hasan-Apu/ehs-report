@@ -189,7 +189,7 @@ const FirstAidIncidentView = ({ incident }) => {
                                         className="relative group aspect-square w-full overflow-hidden rounded-lg border border-slate-100 mb-2 bg-white shadow-sm flex items-center justify-center cursor-zoom-in"
                                         onClick={() => { setSelectedImage(file.url); setZoomLevel(1); }}
                                     >
-                                        <img src={file.url} alt={`Evidence ${idx + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                        <img src={file.url} alt={`Evidence ${idx + 1}`} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                                         <div className="absolute inset-0 bg-rose-900/0 group-hover:bg-rose-900/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                                             <Maximize2 className="text-white drop-shadow-md w-6 h-6" />
                                         </div>

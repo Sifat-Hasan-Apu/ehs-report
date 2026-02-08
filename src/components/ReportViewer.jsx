@@ -78,12 +78,12 @@ const WebLayout = ({ data, month }) => {
                         </div>
                         <div className="text-center group hover:-translate-y-0.5 transition-transform duration-300">
                             <p className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 md:mb-2 group-hover:text-blue-500 transition-colors">LTI Free Days</p>
-                            <p className="text-lg md:text-3xl font-black text-blue-600 tabular-nums">1,240</p>
+                            <p className="text-lg md:text-3xl font-black text-blue-600 tabular-nums">{data?.kpis?.laggingIndicators?.ltiFreeDays?.toLocaleString() || '0'}</p>
                         </div>
                         <div className="text-center group hover:-translate-y-0.5 transition-transform duration-300">
                             <p className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 md:mb-2 group-hover:text-purple-500 transition-colors">Compliance Score</p>
                             <div className="flex items-center justify-center gap-2">
-                                <p className="text-lg md:text-3xl font-black text-slate-800 tabular-nums">98%</p>
+                                <p className="text-lg md:text-3xl font-black text-slate-800 tabular-nums">{data?.kpis?.complianceScore || '0'}%</p>
                             </div>
                         </div>
                     </div>
@@ -215,7 +215,7 @@ const WebLayout = ({ data, month }) => {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 font-bold">
-                                    {data?.kpis?.training?.inductions || 0}
+                                    {data?.programs?.training?.inductionParticipants || 0}
                                 </div>
                                 <div>
                                     <p className="text-sm font-bold text-slate-700">Safety Inductions</p>
@@ -224,7 +224,7 @@ const WebLayout = ({ data, month }) => {
                             </div>
                             <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 font-bold">
-                                    {data?.kpis?.training?.toolboxTalks || 0}
+                                    {data?.programs?.training?.toolboxTalks?.length || 0}
                                 </div>
                                 <div>
                                     <p className="text-sm font-bold text-slate-700">Toolbox Talks</p>
@@ -233,7 +233,7 @@ const WebLayout = ({ data, month }) => {
                             </div>
                             <div className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 font-bold">
-                                    {data?.kpis?.training?.specialTrainings?.length || 0}
+                                    {data?.programs?.training?.specificTrainings?.length || 0}
                                 </div>
                                 <div>
                                     <p className="text-sm font-bold text-slate-700">Specific Trainings</p>
@@ -317,7 +317,7 @@ const WebLayout = ({ data, month }) => {
                                             <div className="aspect-video bg-emerald-50 relative overflow-hidden group cursor-zoom-in" onClick={() => { setSelectedImage(finding.nonCompliance.image); setZoomLevel(1); }}>
                                                 {finding.nonCompliance?.image ? (
                                                     <>
-                                                        <img src={finding.nonCompliance.image} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Positive Observation" />
+                                                        <img src={finding.nonCompliance.image} className="w-full h-full object-contain bg-slate-100 transition-transform duration-500 group-hover:scale-105" alt="Positive Observation" />
                                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                                                             <Maximize2 className="text-white drop-shadow-md w-8 h-8" />
                                                         </div>
@@ -355,7 +355,7 @@ const WebLayout = ({ data, month }) => {
                                             <div className="aspect-video bg-red-50 relative overflow-hidden group cursor-zoom-in" onClick={() => { setSelectedImage(finding.nonCompliance.image); setZoomLevel(1); }}>
                                                 {finding.nonCompliance?.image ? (
                                                     <>
-                                                        <img src={finding.nonCompliance.image} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Unsafe Condition" />
+                                                        <img src={finding.nonCompliance.image} className="w-full h-full object-contain bg-slate-100 transition-transform duration-500 group-hover:scale-105" alt="Unsafe Condition" />
                                                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                                                             <Maximize2 className="text-white drop-shadow-md w-8 h-8" />
                                                         </div>
@@ -401,7 +401,7 @@ const WebLayout = ({ data, month }) => {
                                                 <div className="aspect-video bg-slate-100 relative overflow-hidden group cursor-zoom-in" onClick={() => { setSelectedImage(finding.nonCompliance.image); setZoomLevel(1); }}>
                                                     {finding.nonCompliance?.image ? (
                                                         <>
-                                                            <img src={finding.nonCompliance.image} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Before / Observation" />
+                                                            <img src={finding.nonCompliance.image} className="w-full h-full object-contain bg-slate-100 transition-transform duration-500 group-hover:scale-105" alt="Before / Observation" />
                                                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                                                                 <Maximize2 className="text-white drop-shadow-md w-8 h-8" />
                                                             </div>
@@ -445,7 +445,7 @@ const WebLayout = ({ data, month }) => {
                                                 <div className="aspect-video bg-slate-100 relative overflow-hidden group cursor-zoom-in" onClick={() => { setSelectedImage(finding.correctiveAction.image); setZoomLevel(1); }}>
                                                     {finding.correctiveAction?.image ? (
                                                         <>
-                                                            <img src={finding.correctiveAction.image} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="After / Corrected" />
+                                                            <img src={finding.correctiveAction.image} className="w-full h-full object-contain bg-slate-100 transition-transform duration-500 group-hover:scale-105" alt="After / Corrected" />
                                                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                                                                 <Maximize2 className="text-white drop-shadow-md w-8 h-8" />
                                                             </div>
@@ -634,7 +634,7 @@ const WebLayout = ({ data, month }) => {
                                         {data.programs.training.evidence.map((ev, idx) => (
                                             <div key={idx} className="rounded-xl border border-slate-200 overflow-hidden group cursor-zoom-in" onClick={() => { setSelectedImage(ev.imageUrl); setZoomLevel(1); }}>
                                                 <div className="aspect-square bg-slate-100 relative">
-                                                    <img src={ev.imageUrl} alt={ev.caption || 'Evidence'} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                                    <img src={ev.imageUrl} alt={ev.caption || 'Evidence'} className="w-full h-full object-contain duration-300" />
                                                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                                                         <Maximize2 className="text-white drop-shadow-md w-6 h-6" />
                                                     </div>
@@ -699,7 +699,7 @@ const WebLayout = ({ data, month }) => {
                                         {data.programs.emergencyPreparedness.evidence.map((ev, idx) => (
                                             <div key={idx} className="rounded-xl border border-slate-200 overflow-hidden group cursor-zoom-in" onClick={() => { setSelectedImage(ev.imageUrl); setZoomLevel(1); }}>
                                                 <div className="aspect-square bg-slate-100 relative">
-                                                    <img src={ev.imageUrl} alt={ev.caption || 'Evidence'} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                                    <img src={ev.imageUrl} alt={ev.caption || 'Evidence'} className="w-full h-full object-contain duration-300" />
                                                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                                                         <Maximize2 className="text-white drop-shadow-md w-6 h-6" />
                                                     </div>
@@ -781,7 +781,7 @@ const WebLayout = ({ data, month }) => {
                                         {data.programs.campaigns.evidence.map((ev, idx) => (
                                             <div key={idx} className="rounded-xl border border-slate-200 overflow-hidden group cursor-zoom-in" onClick={() => { setSelectedImage(ev.imageUrl); setZoomLevel(1); }}>
                                                 <div className="aspect-square bg-slate-100 relative">
-                                                    <img src={ev.imageUrl} alt={ev.caption || 'Evidence'} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                                                    <img src={ev.imageUrl} alt={ev.caption || 'Evidence'} className="w-full h-full object-contain duration-300" />
                                                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                                                         <Maximize2 className="text-white drop-shadow-md w-6 h-6" />
                                                     </div>
@@ -968,10 +968,7 @@ const PrintLayout = ({ data, month }) => {
     return (
         <div className="report-container">
             {/* Fixed Footer with Page Numbers (appears on all pages via CSS) */}
-            <div className="pdf-page-footer">
-                <span className="confidential">CONFIDENTIAL - For Internal Use Only</span>
-                <span>Developed by Sifat Hasan Apu</span>
-            </div>
+            {/* Fixed Footer removed - handled in PublicView.jsx via jsPDF */}
 
             {/* ==================== PAGE 1: COVER PAGE ==================== */}
             <div className="pdf-cover-page">
@@ -1005,8 +1002,22 @@ const PrintLayout = ({ data, month }) => {
                     </div>
                 </div>
 
+            </div>
+
+            {/* ==================== PAGE 2: EXECUTIVE SUMMARY & POLICY ==================== */}
+            <div className="pdf-page-break">
+                <div className="pdf-page-header">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <img src={COMPANY_LOGO} alt="Logo" className="company-logo" />
+                        <span className="company-name">{COMPANY_NAME}</span>
+                    </div>
+                    <span className="report-title">EHS Report - {month}</span>
+                </div>
+
+                <h2 className="pdf-section-header">Section 1: Executive Summary & Policy</h2>
+
                 {/* Key Stats Summary */}
-                <div style={{ marginTop: '40px' }}>
+                <div style={{ marginBottom: '40px' }}>
                     <h3 className="pdf-subsection-header">Executive Summary</h3>
                     <table className="pdf-table">
                         <thead>
@@ -1022,36 +1033,62 @@ const PrintLayout = ({ data, month }) => {
                                 <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{data?.basicInfo?.manpower?.total || '0'}+</td>
                                 <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{data?.kpis?.manHours?.current?.toLocaleString() || '0'}</td>
                                 <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{data?.kpis?.manHours?.cumulative?.toLocaleString() || '0'}</td>
-                                <td style={{ textAlign: 'center', fontWeight: 'bold' }}>1,240</td>
+                                <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{data?.kpis?.laggingIndicators?.ltiFreeDays?.toLocaleString() || '0'}</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
-                {/* Policy Statement */}
-                {data?.policyObjectives?.policyStatement && (
-                    <div style={{ marginTop: '30px' }} className="pdf-keep-together">
-                        <h3 className="pdf-subsection-header">Policy Statement</h3>
-                        <p style={{ fontSize: '10pt', lineHeight: '1.6', color: '#333' }}>
-                            {data.policyObjectives.policyStatement}
-                        </p>
+                {/* Policy Statement & Objectives (Smart Layout) */}
+                <div style={{ display: 'flex', gap: '25px', alignItems: 'stretch', marginTop: '30px' }} className="pdf-keep-together">
+                    {/* Left: Policy */}
+                    <div style={{ flex: '1', padding: '30px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', backgroundColor: '#0f766e' }}></div>
+                        <div>
+                            <h3 style={{ fontSize: '9pt', fontWeight: 'bold', textTransform: 'uppercase', color: '#94a3b8', marginBottom: '20px', letterSpacing: '1px' }}>Policy Statement</h3>
+                            <blockquote style={{ fontSize: '14pt', fontFamily: 'serif', fontStyle: 'italic', color: '#1e293b', lineHeight: '1.6', margin: '0 0 20px 0' }}>
+                                "{data?.policyObjectives?.policy || data?.policyObjectives?.policyStatement || 'Prioritizing safety, health, and environment in every action we take.'}"
+                            </blockquote>
+                        </div>
+                        <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '15px' }}>
+                            <span style={{ fontSize: '8pt', fontWeight: 'bold', textTransform: 'uppercase', color: '#64748b', letterSpacing: '0.5px' }}>Project Commitment</span>
+                        </div>
                     </div>
-                )}
 
-                {/* Monthly Objectives */}
-                {data?.policyObjectives?.objectives?.length > 0 && (
-                    <div style={{ marginTop: '20px' }} className="pdf-keep-together">
-                        <h3 className="pdf-subsection-header">Monthly Objectives</h3>
-                        <ul className="pdf-list">
-                            {data.policyObjectives.objectives.map((obj, i) => (
-                                <li key={i}>{obj}</li>
-                            ))}
+                    {/* Right: Objectives */}
+                    <div style={{ flex: '1', padding: '30px', backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px', borderBottom: '1px solid #f1f5f9', paddingBottom: '15px' }}>
+                            <h3 style={{ fontSize: '11pt', fontWeight: 'bold', textTransform: 'uppercase', color: '#334155', margin: 0, letterSpacing: '0.5px' }}>Monthly Objectives</h3>
+                            <span style={{
+                                fontSize: '8pt',
+                                backgroundColor: '#eff6ff',
+                                color: '#1d4ed8',
+                                padding: '6px 14px',
+                                borderRadius: '16px',
+                                fontWeight: 'bold',
+                                border: '1px solid #dbeafe',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                lineHeight: '1',
+                                height: '28px',
+                                whiteSpace: 'nowrap'
+                            }}>{month}</span>
+                        </div>
+                        <ul className="pdf-objectives-list">
+                            {data?.policyObjectives?.objectives?.length > 0 ? (
+                                data.policyObjectives.objectives.map((obj, i) => (
+                                    <li key={i} className="pdf-objectives-item">{obj}</li>
+                                ))
+                            ) : (
+                                <li className="pdf-objectives-empty">No specific objectives set for this month.</li>
+                            )}
                         </ul>
                     </div>
-                )}
+                </div>
             </div>
 
-            {/* ==================== PAGE 2: KEY PERFORMANCE INDICATORS ==================== */}
+            {/* ==================== PAGE 3: KEY PERFORMANCE INDICATORS ==================== */}
             <div className="pdf-page-break">
                 <div className="pdf-page-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -1061,7 +1098,7 @@ const PrintLayout = ({ data, month }) => {
                     <span className="report-title">EHS Report - {month}</span>
                 </div>
 
-                <h2 className="pdf-section-header">Section 1: Key Performance Indicators</h2>
+                <h2 className="pdf-section-header">Section 2: Key Performance Indicators</h2>
 
                 {/* Man-Hours */}
                 <h3 className="pdf-subsection-header">Man-Hours Statistics</h3>
@@ -1149,7 +1186,7 @@ const PrintLayout = ({ data, month }) => {
                 </table>
             </div>
 
-            {/* ==================== SITE INSPECTIONS ==================== */}
+            {/* ==================== PAGE 4: SITE INSPECTIONS ==================== */}
             {data?.siteInspections?.findings?.length > 0 && (
                 <div className="pdf-page-break">
                     <div className="pdf-page-header">
@@ -1160,7 +1197,7 @@ const PrintLayout = ({ data, month }) => {
                         <span className="report-title">EHS Report - {month}</span>
                     </div>
 
-                    <h2 className="pdf-section-header">Section 2: Site Inspection / Observation Report</h2>
+                    <h2 className="pdf-section-header">Section 3: Site Inspection / Observation Report</h2>
 
                     {data.siteInspections.findings.map((finding, i) => (
                         <div key={i} className="pdf-inspection-card">
@@ -1201,7 +1238,7 @@ const PrintLayout = ({ data, month }) => {
                 </div>
             )}
 
-            {/* ==================== INCIDENTS SUMMARY ==================== */}
+            {/* ==================== PAGE 5: INCIDENTS ==================== */}
             <div className="pdf-page-break">
                 <div className="pdf-page-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -1211,7 +1248,7 @@ const PrintLayout = ({ data, month }) => {
                     <span className="report-title">EHS Report - {month}</span>
                 </div>
 
-                <h2 className="pdf-section-header">Section 3: Incident Log</h2>
+                <h2 className="pdf-section-header">Section 4: Incident Log</h2>
 
                 {(data?.incidents?.fireIncidents?.length > 0 || data?.incidents?.firstAidIncidents?.length > 0 || data?.incidents?.ffhIncidents?.length > 0) ? (
                     <table className="pdf-table">
@@ -1257,7 +1294,7 @@ const PrintLayout = ({ data, month }) => {
                 )}
             </div>
 
-            {/* ==================== PROGRAMS & ACTIVITIES ==================== */}
+            {/* ==================== PAGE 6: PROGRAMS & ACTIVITIES ==================== */}
             <div className="pdf-page-break">
                 <div className="pdf-page-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -1267,7 +1304,7 @@ const PrintLayout = ({ data, month }) => {
                     <span className="report-title">EHS Report - {month}</span>
                 </div>
 
-                <h2 className="pdf-section-header">Section 4: EHS Programs & Activities</h2>
+                <h2 className="pdf-section-header">Section 5: EHS Programs & Activities</h2>
 
                 {/* Training Details */}
                 {data?.programs?.training?.toolboxTalks?.length > 0 && (
@@ -1341,7 +1378,7 @@ const PrintLayout = ({ data, month }) => {
                 )}
             </div>
 
-            {/* ==================== OPERATIONAL CONTROLS & ENVIRONMENT ==================== */}
+            {/* ==================== PAGE 7: CHALLENGES & IMPROVEMENT ==================== */}
             <div className="pdf-page-break">
                 <div className="pdf-page-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -1351,7 +1388,7 @@ const PrintLayout = ({ data, month }) => {
                     <span className="report-title">EHS Report - {month}</span>
                 </div>
 
-                <h2 className="pdf-section-header">Section 5: High Risk Work & Environment</h2>
+                <h2 className="pdf-section-header">Section 6: Challenges & Improvement Plan</h2>
 
                 {/* Permits */}
                 {data?.highRiskWork?.permits?.length > 0 && (
