@@ -219,7 +219,13 @@ export const getAvailableReports = () => {
 
 export const useReportData = (year, month) => {
     const [reportData, setReportData] = useState(INITIAL_DATA);
+    const reportDataRef = useRef(INITIAL_DATA); // Always holds latest reportData
     const storageKey = getStorageKey(year, month);
+
+    // Keep ref in sync with state
+    useEffect(() => {
+        reportDataRef.current = reportData;
+    }, [reportData]);
 
     // Load data from Firebase when year/month changes
     useEffect(() => {
@@ -314,27 +320,34 @@ export const useReportData = (year, month) => {
         return () => unsubscribe();
     }, [storageKey]);
 
-    // Update function to write to Firebase - wrapped in useCallback for stable reference
+    // Update function to write to Firebase - using ref for guaranteed latest data
     const updateSection = useCallback((section, data) => {
-        // Use functional update to get latest state and compute new data
-        let newDataForFirebase;
+        // Get the CURRENT data from ref (always up-to-date)
+        const currentData = reportDataRef.current;
 
-        setReportData(prev => {
-            const newData = {
-                ...prev,
-                [section]: { ...prev[section], ...data }
-            };
-            newDataForFirebase = newData; // Capture for Firebase
-            return newData;
-        });
+        // Compute new data
+        const newData = {
+            ...currentData,
+            [section]: { ...currentData[section], ...data }
+        };
 
-        // Write to Firebase using the captured data
-        console.log('[Firebase] Writing to:', storageKey, 'Section:', section);
+        console.log('[Firebase] Computing new data for section:', section);
+        console.log('[Firebase] Current data exists:', !!currentData);
+        console.log('[Firebase] New data preview:', { section, keys: Object.keys(newData) });
+
+        // Update both ref and state
+        reportDataRef.current = newData;
+        setReportData(newData);
+
+        // Write to Firebase
+        console.log('[Firebase] Writing to:', storageKey);
         const reportRef = ref(db, storageKey);
-        return set(reportRef, newDataForFirebase)
-            .then(() => console.log('[Firebase] Write successful!'))
+        return set(reportRef, newData)
+            .then(() => {
+                console.log('[Firebase] ✅ Write successful!');
+            })
             .catch(err => {
-                console.error('[Firebase] Write failed:', err);
+                console.error('[Firebase] ❌ Write failed:', err);
                 throw err;
             });
     }, [storageKey]);
