@@ -97,33 +97,33 @@ const AdminPanel = () => {
         'issues', 'improvementPlan'
     ];
 
-    // Debounced Auto-Save - INLINE to capture current values
+    // Reset save status when form data changes so user can save again immediately
     useEffect(() => {
-        // Skip initial load
-        if (isFirstRun.current) {
-            isFirstRun.current = false;
-            return;
+        if (saveStatus === 'saved' || saveStatus === 'error') {
+            setSaveStatus('idle');
         }
+    }, [formData]);
 
+    // Manual Save Logic
+    const handleManualSave = async () => {
         setSaveStatus('saving');
-
-        // Capture current values at trigger time
         const currentSectionKey = SECTION_KEYS[activeSection];
-        const currentFormData = { ...formData };
+        const currentFormData = { ...formData }; // Capture current state
 
-        const timer = setTimeout(async () => {
-            try {
-                await updateSection(currentSectionKey, currentFormData);
-                setSaveStatus('saved');
-                setLastSaved(new Date());
-            } catch (error) {
-                console.error('Auto-save failed:', error);
-                setSaveStatus('error');
-            }
-        }, 2000); // 2 seconds debounce
+        try {
+            await updateSection(currentSectionKey, currentFormData);
+            setSaveStatus('saved');
+            setLastSaved(new Date());
 
-        return () => clearTimeout(timer);
-    }, [formData, activeSection, updateSection]);
+            // Show success feedback briefly then revert to Save button
+            setTimeout(() => {
+                setSaveStatus(prev => prev === 'saved' ? 'idle' : prev);
+            }, 2000);
+        } catch (error) {
+            console.error('Manual save failed:', error);
+            setSaveStatus('error');
+        }
+    };
 
     // Toggle Publish/Draft status
     const handleTogglePublish = () => {
@@ -237,11 +237,24 @@ const AdminPanel = () => {
                                 {reportData.status === 'published' ? 'PUBLISHED' : 'DRAFT'}
                             </span>
                         </div>
-                        {/* Save Status */}
-                        <div className="flex items-center gap-1 mt-1 transition-all">
-                            {saveStatus === 'saving' && <span className="text-[10px] font-medium text-brand-600 flex items-center gap-1"><Cloud className="w-3 h-3" /> Saving...</span>}
-                            {saveStatus === 'saved' && <span className="text-[10px] font-medium text-emerald-600 flex items-center gap-1"><Check className="w-3 h-3" /> Saved</span>}
-                            {saveStatus === 'error' && <span className="text-[10px] font-medium text-red-600 flex items-center gap-1"><Cloud className="w-3 h-3" /> Retry needed</span>}
+                        {/* Save Status / Manual Save Button */}
+                        <div className="flex items-center gap-2 mt-2">
+                            <button
+                                onClick={handleManualSave}
+                                disabled={saveStatus === 'saving'}
+                                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-all ${saveStatus === 'saved'
+                                    ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                                    : 'bg-brand-600 text-white shadow-md active:scale-95'
+                                    }`}
+                            >
+                                {saveStatus === 'saving' ? (
+                                    <><Cloud className="w-3 h-3 animate-pulse" /> Saving...</>
+                                ) : saveStatus === 'saved' ? (
+                                    <><Check className="w-3 h-3" /> Saved!</>
+                                ) : (
+                                    <><Save className="w-3 h-3" /> Save Changes</>
+                                )}
+                            </button>
                         </div>
                     </div>
                     <button
@@ -372,24 +385,32 @@ const AdminPanel = () => {
                             <p className="text-xs md:text-sm text-slate-500 hidden md:block">Section {activeSection + 1}</p>
                         </div>
                         <div className="flex items-center gap-4">
-                            {/* Auto-Save Indicator Only */}
-                            <div className="flex items-center gap-2 transition-all duration-300">
-                                {saveStatus === 'saving' && (
-                                    <span className="flex items-center gap-1.5 text-xs font-semibold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full animate-pulse border border-brand-100">
-                                        <Cloud className="w-3.5 h-3.5" /> Saving...
-                                    </span>
+                            {/* Manual Save Button for Desktop */}
+                            <button
+                                onClick={handleManualSave}
+                                disabled={saveStatus === 'saving'}
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 ${saveStatus === 'saved'
+                                    ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                                    : 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm hover:shadow-md active:scale-95'
+                                    }`}
+                            >
+                                {saveStatus === 'saving' ? (
+                                    <>
+                                        <Cloud className="w-4 h-4 animate-bounce" />
+                                        Saving...
+                                    </>
+                                ) : saveStatus === 'saved' ? (
+                                    <>
+                                        <Check className="w-4 h-4" />
+                                        Saved Successfully
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save className="w-4 h-4" />
+                                        Save Changes
+                                    </>
                                 )}
-                                {saveStatus === 'saved' && (
-                                    <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100 transition-all duration-500">
-                                        <Check className="w-3.5 h-3.5" /> Saved
-                                    </span>
-                                )}
-                                {saveStatus === 'error' && (
-                                    <span className="flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 px-2.5 py-1 rounded-full border border-red-100">
-                                        <Cloud className="w-3.5 h-3.5" /> Retry needed
-                                    </span>
-                                )}
-                            </div>
+                            </button>
                         </div>
                     </div>
 
@@ -414,40 +435,18 @@ const AdminPanel = () => {
                                                 placeholder="e.g. United Chattogram Power Limited"
                                             />
                                         </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-medium text-slate-700">Company Logo</label>
-                                            <div className="flex items-center gap-3">
-                                                {formData.companyLogo ? (
-                                                    <div className="relative">
-                                                        <img src={formData.companyLogo} alt="Logo" className="h-10 w-auto object-contain bg-white border border-slate-200 rounded p-1" />
-                                                        <button
-                                                            onClick={() => setFormData(prev => ({ ...prev, companyLogo: '' }))}
-                                                            className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
-                                                        >×</button>
-                                                    </div>
-                                                ) : null}
-                                                <label className="flex-1 flex items-center gap-2 px-4 py-2 bg-white border border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-brand-500 hover:bg-brand-50/50 transition-all">
-                                                    <UploadCloud className="w-4 h-4 text-slate-400" />
-                                                    <span className="text-sm text-slate-500">{formData.companyLogo ? 'Change' : 'Upload Logo'}</span>
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        className="hidden"
-                                                        onChange={(e) => {
-                                                            const file = e.target.files?.[0];
-                                                            if (file) {
-                                                                const reader = new FileReader();
-                                                                reader.onload = (ev) => {
-                                                                    setFormData(prev => ({ ...prev, companyLogo: ev.target.result }));
-                                                                };
-                                                                reader.readAsDataURL(file);
-                                                            }
-                                                        }}
-                                                    />
-                                                </label>
+                                        <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                            <div className="w-16 h-16 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center">
+                                                {/* Placeholder for fixed logo - user should place logo.png in public folder */}
+                                                <img src="/logo.png" alt="Company Logo" className="w-full h-full object-contain" onError={(e) => { e.target.onerror = null; e.target.src = 'https://ui-avatars.com/api/?name=U+C&background=random'; }} />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-slate-800">United Chattogram Power Limited</h3>
+                                                <p className="text-xs text-slate-500">590MW CCPP</p>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
 
                                 {/* Project Info Section */}
@@ -2544,10 +2543,10 @@ const AdminPanel = () => {
                         )}
                     </div>
                 </div>
-            </div>
+            </div >
 
             {/* Developer Credit */}
-            <div className="md:col-span-4 mt-4 pb-4 text-center">
+            < div className="md:col-span-4 mt-4 pb-4 text-center" >
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-slate-100">
                     <svg className="w-4 h-4 text-brand-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -2558,8 +2557,8 @@ const AdminPanel = () => {
                     <span className="text-xs text-slate-400">Developed by</span>
                     <span className="text-sm font-semibold text-slate-700">Sifat Hasan Apu</span>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 
