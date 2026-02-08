@@ -40,6 +40,10 @@ const PublicView = () => {
 
     // Open preview modal
     const handlePreview = () => {
+        if (reportData?.status === 'draft') {
+            alert("Report Not Published\n\nThis report is currently in DRAFT mode. It must be published by an administrator before it can be previewed or downloaded.");
+            return;
+        }
         setShowPreview(true);
         // Add class to show print layout
         document.body.classList.add('pdf-generating');
