@@ -90,24 +90,14 @@ const AdminPanel = () => {
     const [lastSaved, setLastSaved] = useState(null);
     const isFirstRun = React.useRef(true);
 
-    const handleSilentSave = async () => {
-        const sectionKeys = [
-            'basicInfo', 'policyObjectives', 'kpis',
-            'siteInspections', 'incidents', 'programs',
-            'highRiskWork', 'environment',
-            'issues', 'improvementPlan'
-        ];
-        try {
-            await updateSection(sectionKeys[activeSection], formData);
-            setSaveStatus('saved');
-            setLastSaved(new Date());
-        } catch (error) {
-            console.error("Auto-save failed", error);
-            setSaveStatus('error');
-        }
-    };
+    const SECTION_KEYS = [
+        'basicInfo', 'policyObjectives', 'kpis',
+        'siteInspections', 'incidents', 'programs',
+        'highRiskWork', 'environment',
+        'issues', 'improvementPlan'
+    ];
 
-    // Debounced Auto-Save
+    // Debounced Auto-Save - INLINE to capture current values
     useEffect(() => {
         // Skip initial load
         if (isFirstRun.current) {
@@ -116,12 +106,28 @@ const AdminPanel = () => {
         }
 
         setSaveStatus('saving');
-        const timer = setTimeout(() => {
-            handleSilentSave();
+
+        // Capture current values at trigger time
+        const currentSectionKey = SECTION_KEYS[activeSection];
+        const currentFormData = { ...formData };
+
+        console.log('[AutoSave] Scheduling save for:', currentSectionKey, currentFormData);
+
+        const timer = setTimeout(async () => {
+            try {
+                console.log('[AutoSave] Executing save...');
+                await updateSection(currentSectionKey, currentFormData);
+                console.log('[AutoSave] Save successful!');
+                setSaveStatus('saved');
+                setLastSaved(new Date());
+            } catch (error) {
+                console.error('[AutoSave] Save failed:', error);
+                setSaveStatus('error');
+            }
         }, 2000); // 2 seconds debounce
 
         return () => clearTimeout(timer);
-    }, [formData]);
+    }, [formData, activeSection, updateSection]);
 
     // Toggle Publish/Draft status
     const handleTogglePublish = () => {
@@ -135,19 +141,16 @@ const AdminPanel = () => {
 
     // Manual Save
     const handleSave = async () => {
-        const sectionKeys = [
-            'basicInfo', 'policyObjectives', 'kpis',
-            'siteInspections', 'incidents', 'programs',
-            'highRiskWork', 'environment',
-            'issues', 'improvementPlan'
-        ];
         setSaveStatus('saving');
         try {
-            await updateSection(sectionKeys[activeSection], formData);
+            console.log('[ManualSave] Saving:', SECTION_KEYS[activeSection], formData);
+            await updateSection(SECTION_KEYS[activeSection], formData);
+            console.log('[ManualSave] Success!');
             setSaveStatus('saved');
             setLastSaved(new Date());
             alert('Data saved successfully!');
         } catch (error) {
+            console.error('[ManualSave] Failed:', error);
             setSaveStatus('error');
             alert('Failed to save data!');
         }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { ref, onValue, set } from "firebase/database";
 import { db } from '../firebase';
 
@@ -314,8 +314,8 @@ export const useReportData = (year, month) => {
         return () => unsubscribe();
     }, [storageKey]);
 
-    // Update function to write to Firebase
-    const updateSection = (section, data) => {
+    // Update function to write to Firebase - wrapped in useCallback for stable reference
+    const updateSection = useCallback((section, data) => {
         // Use functional update to get latest state and compute new data
         let newDataForFirebase;
 
@@ -329,9 +329,15 @@ export const useReportData = (year, month) => {
         });
 
         // Write to Firebase using the captured data
+        console.log('[Firebase] Writing to:', storageKey, 'Section:', section);
         const reportRef = ref(db, storageKey);
-        return set(reportRef, newDataForFirebase);
-    };
+        return set(reportRef, newDataForFirebase)
+            .then(() => console.log('[Firebase] Write successful!'))
+            .catch(err => {
+                console.error('[Firebase] Write failed:', err);
+                throw err;
+            });
+    }, [storageKey]);
 
     // New helper to overwrite entire data (useful for migration/reset)
     const setFullReportData = (newDataOrFunc) => {
