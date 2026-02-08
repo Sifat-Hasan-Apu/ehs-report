@@ -331,25 +331,13 @@ export const useReportData = (year, month) => {
             [section]: { ...currentData[section], ...data }
         };
 
-        console.log('[Firebase] Computing new data for section:', section);
-        console.log('[Firebase] Current data exists:', !!currentData);
-        console.log('[Firebase] New data preview:', { section, keys: Object.keys(newData) });
-
         // Update both ref and state
         reportDataRef.current = newData;
         setReportData(newData);
 
         // Write to Firebase
-        console.log('[Firebase] Writing to:', storageKey);
         const reportRef = ref(db, storageKey);
-        return set(reportRef, newData)
-            .then(() => {
-                console.log('[Firebase] ✅ Write successful!');
-            })
-            .catch(err => {
-                console.error('[Firebase] ❌ Write failed:', err);
-                throw err;
-            });
+        return set(reportRef, newData);
     }, [storageKey]);
 
     // New helper to overwrite entire data (useful for migration/reset)

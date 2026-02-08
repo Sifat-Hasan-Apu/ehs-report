@@ -5,6 +5,7 @@ import { getDatabase } from "firebase/database";
 const firebaseConfig = {
     apiKey: "AIzaSyCp-Mj0X-4iQK8n3bAwvQCby-Cwcwq6jec",
     authDomain: "ehs-site-report.firebaseapp.com",
+    databaseURL: "https://ehs-site-report-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "ehs-site-report",
     storageBucket: "ehs-site-report.firebasestorage.app",
     messagingSenderId: "539131422738",

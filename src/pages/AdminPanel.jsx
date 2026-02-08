@@ -111,17 +111,13 @@ const AdminPanel = () => {
         const currentSectionKey = SECTION_KEYS[activeSection];
         const currentFormData = { ...formData };
 
-        console.log('[AutoSave] Scheduling save for:', currentSectionKey, currentFormData);
-
         const timer = setTimeout(async () => {
             try {
-                console.log('[AutoSave] Executing save...');
                 await updateSection(currentSectionKey, currentFormData);
-                console.log('[AutoSave] Save successful!');
                 setSaveStatus('saved');
                 setLastSaved(new Date());
             } catch (error) {
-                console.error('[AutoSave] Save failed:', error);
+                console.error('Auto-save failed:', error);
                 setSaveStatus('error');
             }
         }, 2000); // 2 seconds debounce
@@ -139,22 +135,7 @@ const AdminPanel = () => {
         alert(`Report ${newStatus === 'published' ? 'Published' : 'Unpublished'} successfully!`);
     };
 
-    // Manual Save
-    const handleSave = async () => {
-        setSaveStatus('saving');
-        try {
-            console.log('[ManualSave] Saving:', SECTION_KEYS[activeSection], formData);
-            await updateSection(SECTION_KEYS[activeSection], formData);
-            console.log('[ManualSave] Success!');
-            setSaveStatus('saved');
-            setLastSaved(new Date());
-            alert('Data saved successfully!');
-        } catch (error) {
-            console.error('[ManualSave] Failed:', error);
-            setSaveStatus('error');
-            alert('Failed to save data!');
-        }
-    };
+    // Manual Save - Removed as per user request (Auto-save is sufficient)
 
     // Sync form data when switching sections
     useEffect(() => {
@@ -391,8 +372,8 @@ const AdminPanel = () => {
                             <p className="text-xs md:text-sm text-slate-500 hidden md:block">Section {activeSection + 1}</p>
                         </div>
                         <div className="flex items-center gap-4">
-                            {/* Save Status Indicator */}
-                            <div className="hidden sm:flex items-center gap-2 transition-all duration-300">
+                            {/* Auto-Save Indicator Only */}
+                            <div className="flex items-center gap-2 transition-all duration-300">
                                 {saveStatus === 'saving' && (
                                     <span className="flex items-center gap-1.5 text-xs font-semibold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full animate-pulse border border-brand-100">
                                         <Cloud className="w-3.5 h-3.5" /> Saving...
@@ -409,16 +390,6 @@ const AdminPanel = () => {
                                     </span>
                                 )}
                             </div>
-
-                            {activeSection !== 4 && ( // Hide Save button for Incidents tab as they save individually
-                                <button
-                                    onClick={handleSave}
-                                    className="flex items-center gap-2 px-3 md:px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm shadow-brand-200"
-                                >
-                                    <Save className="w-4 h-4" />
-                                    <span className="hidden md:inline">Save Changes</span>
-                                </button>
-                            )}
                         </div>
                     </div>
 
