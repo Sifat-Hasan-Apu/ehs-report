@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, Save, Upload, Plus, Flame, Trash2, Activity, ArrowDown, ClipboardCheck, XCircle, CheckCircle, UploadCloud, Calendar, FileText, Target, Check, BookOpen, UserCheck, Leaf, Droplet, Info, Minus, AlertTriangle, AlertCircle, Construction } from 'lucide-react';
+import { Shield, Save, Upload, Plus, Flame, Trash2, Activity, ArrowDown, ClipboardCheck, XCircle, CheckCircle, UploadCloud, Calendar, FileText, Target, Check, BookOpen, UserCheck, Leaf, Droplet, Info, Minus, AlertTriangle, AlertCircle, Construction, X, Cloud } from 'lucide-react';
 import { useReportData, getCurrentPeriod, MONTH_NAMES } from '../hooks/useReportData';
 import FireIncidentForm from '../components/FireIncidentForm';
 import FirstAidIncidentForm from '../components/FirstAidIncidentForm';
@@ -84,6 +84,75 @@ const AdminPanel = () => {
         }));
     };
 
+
+    // Auto-Save State & Logic
+    const [saveStatus, setSaveStatus] = useState('saved'); // saved, saving, error
+    const [lastSaved, setLastSaved] = useState(null);
+    const isFirstRun = React.useRef(true);
+
+    const handleSilentSave = async () => {
+        const sectionKeys = [
+            'basicInfo', 'policyObjectives', 'kpis',
+            'siteInspections', 'incidents', 'programs',
+            'highRiskWork', 'environment',
+            'issues', 'improvementPlan'
+        ];
+        try {
+            await updateSection(sectionKeys[activeSection], formData);
+            setSaveStatus('saved');
+            setLastSaved(new Date());
+        } catch (error) {
+            console.error("Auto-save failed", error);
+            setSaveStatus('error');
+        }
+    };
+
+    // Debounced Auto-Save
+    useEffect(() => {
+        // Skip initial load
+        if (isFirstRun.current) {
+            isFirstRun.current = false;
+            return;
+        }
+
+        setSaveStatus('saving');
+        const timer = setTimeout(() => {
+            handleSilentSave();
+        }, 2000); // 2 seconds debounce
+
+        return () => clearTimeout(timer);
+    }, [formData]);
+
+    // Toggle Publish/Draft status
+    const handleTogglePublish = () => {
+        const newStatus = reportData.status === 'published' ? 'draft' : 'published';
+        setReportData(prev => ({
+            ...prev,
+            status: newStatus
+        }));
+        alert(`Report ${newStatus === 'published' ? 'Published' : 'Unpublished'} successfully!`);
+    };
+
+    // Manual Save
+    const handleSave = async () => {
+        const sectionKeys = [
+            'basicInfo', 'policyObjectives', 'kpis',
+            'siteInspections', 'incidents', 'programs',
+            'highRiskWork', 'environment',
+            'issues', 'improvementPlan'
+        ];
+        setSaveStatus('saving');
+        try {
+            await updateSection(sectionKeys[activeSection], formData);
+            setSaveStatus('saved');
+            setLastSaved(new Date());
+            alert('Data saved successfully!');
+        } catch (error) {
+            setSaveStatus('error');
+            alert('Failed to save data!');
+        }
+    };
+
     // Sync form data when switching sections
     useEffect(() => {
         const sectionKeys = [
@@ -120,18 +189,6 @@ const AdminPanel = () => {
         }));
     };
 
-    const handleSave = () => {
-        const sectionKeys = [
-            'basicInfo', 'policyObjectives', 'kpis',
-            'siteInspections', 'incidents', 'programs',
-            'highRiskWork', 'environment',
-            'issues', 'improvementPlan'
-        ];
-        const currentKey = sectionKeys[activeSection];
-        console.log(`Saving ${currentKey}...`, formData);
-        updateSection(currentKey, formData);
-        alert("Section saved successfully!");
-    };
 
     // Helper to update incidents
     const handleUpdateIncidents = (type, updatedList) => {
@@ -186,6 +243,33 @@ const AdminPanel = () => {
                         </svg>
                     </div>
                 </div>
+
+                {/* Mobile Status Bar */}
+                <div className="mt-3 bg-white rounded-xl p-3 shadow-sm border border-slate-100 flex items-center justify-between">
+                    <div>
+                        <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${reportData.status === 'published' ? 'bg-green-500 animate-pulse' : 'bg-amber-500'}`}></div>
+                            <span className={`text-xs font-bold ${reportData.status === 'published' ? 'text-green-700' : 'text-amber-700'}`}>
+                                {reportData.status === 'published' ? 'PUBLISHED' : 'DRAFT'}
+                            </span>
+                        </div>
+                        {/* Save Status */}
+                        <div className="flex items-center gap-1 mt-1 transition-all">
+                            {saveStatus === 'saving' && <span className="text-[10px] font-medium text-brand-600 flex items-center gap-1"><Cloud className="w-3 h-3" /> Saving...</span>}
+                            {saveStatus === 'saved' && <span className="text-[10px] font-medium text-emerald-600 flex items-center gap-1"><Check className="w-3 h-3" /> Saved</span>}
+                            {saveStatus === 'error' && <span className="text-[10px] font-medium text-red-600 flex items-center gap-1"><Cloud className="w-3 h-3" /> Retry needed</span>}
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleTogglePublish}
+                        className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-colors ${reportData.status === 'published'
+                            ? 'bg-slate-100 text-slate-600 border border-slate-200'
+                            : 'bg-green-600 text-white shadow-md shadow-green-200'
+                            }`}
+                    >
+                        {reportData.status === 'published' ? 'Unpublish' : 'Publish'}
+                    </button>
+                </div>
             </div>
 
             {/* Desktop: Sidebar Navigation */}
@@ -227,11 +311,42 @@ const AdminPanel = () => {
                     </p>
                 </div>
 
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 className="font-bold text-slate-800 mb-2">Edit Sections</h3>
-                    <p className="text-xs text-slate-500">Navigate through the 11 sections to compile the report.</p>
+                <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-bold text-slate-800 text-sm">Report Status</h3>
+                        <div className={`w-2 h-2 rounded-full ${reportData.status === 'published' ? 'bg-green-500 animate-pulse' : 'bg-amber-500'}`}></div>
+                    </div>
+                    <div className={`p-3 rounded-xl mb-4 text-center ${reportData.status === 'published'
+                        ? 'bg-green-50 border border-green-100'
+                        : 'bg-amber-50 border border-amber-100'
+                        }`}>
+                        <span className={`block text-xs font-bold mb-1 ${reportData.status === 'published' ? 'text-green-600' : 'text-amber-600'
+                            }`}>
+                            CURRENTLY
+                        </span>
+                        <span className={`text-lg font-black ${reportData.status === 'published' ? 'text-green-700' : 'text-amber-700'
+                            }`}>
+                            {reportData.status === 'published' ? 'PUBLISHED' : 'DRAFT'}
+                        </span>
+                    </div>
+                    <button
+                        onClick={handleTogglePublish}
+                        className={`w-full py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center justify-center gap-2 ${reportData.status === 'published'
+                            ? 'bg-white border-2 border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                            : 'bg-gradient-to-r from-green-500 to-emerald-500 text-white hover:shadow-green-200 hover:shadow-lg hover:-translate-y-0.5'
+                            }`}
+                    >
+                        {reportData.status === 'published' ? (
+                            <>
+                                <X className="w-4 h-4" /> Unpublish
+                            </>
+                        ) : (
+                            <>
+                                <CheckCircle className="w-4 h-4" /> Publish Now
+                            </>
+                        )}
+                    </button>
                 </div>
-
                 <nav className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                     {SECTIONS.map((item, idx) => (
                         <button
@@ -262,18 +377,46 @@ const AdminPanel = () => {
                                 <span className="md:hidden text-[10px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 whitespace-nowrap">
                                     #{activeSection + 1}
                                 </span>
+                                {/* Status Badge */}
+                                <span className={`hidden md:inline text-xs font-bold px-2 py-1 rounded ${reportData.status === 'published'
+                                    ? 'bg-green-100 text-green-700 border border-green-200'
+                                    : 'bg-amber-100 text-amber-700 border border-amber-200'
+                                    }`}>
+                                    {reportData.status === 'published' ? '✓ PUBLISHED' : '● DRAFT'}
+                                </span>
                             </div>
                             <p className="text-xs md:text-sm text-slate-500 hidden md:block">Section {activeSection + 1}</p>
                         </div>
-                        {activeSection !== 4 && ( // Hide Save button for Incidents tab as they save individually
-                            <button
-                                onClick={handleSave}
-                                className="flex items-center gap-2 px-3 md:px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm shadow-brand-200"
-                            >
-                                <Save className="w-4 h-4" />
-                                <span className="hidden md:inline">Save Changes</span>
-                            </button>
-                        )}
+                        <div className="flex items-center gap-4">
+                            {/* Save Status Indicator */}
+                            <div className="hidden sm:flex items-center gap-2 transition-all duration-300">
+                                {saveStatus === 'saving' && (
+                                    <span className="flex items-center gap-1.5 text-xs font-semibold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-full animate-pulse border border-brand-100">
+                                        <Cloud className="w-3.5 h-3.5" /> Saving...
+                                    </span>
+                                )}
+                                {saveStatus === 'saved' && (
+                                    <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100 transition-all duration-500">
+                                        <Check className="w-3.5 h-3.5" /> Saved
+                                    </span>
+                                )}
+                                {saveStatus === 'error' && (
+                                    <span className="flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 px-2.5 py-1 rounded-full border border-red-100">
+                                        <Cloud className="w-3.5 h-3.5" /> Retry needed
+                                    </span>
+                                )}
+                            </div>
+
+                            {activeSection !== 4 && ( // Hide Save button for Incidents tab as they save individually
+                                <button
+                                    onClick={handleSave}
+                                    className="flex items-center gap-2 px-3 md:px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm shadow-brand-200"
+                                >
+                                    <Save className="w-4 h-4" />
+                                    <span className="hidden md:inline">Save Changes</span>
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     <div className="p-4 md:p-8">

@@ -1,33 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import ReportViewer from '../components/ReportViewer';
-import { useReportData, getAvailableReports, getCurrentPeriod, MONTH_NAMES } from '../hooks/useReportData';
-import { Download, Loader2, Eye, X } from 'lucide-react';
+import { useReportData, useAvailableReports, getCurrentPeriod, MONTH_NAMES } from '../hooks/useReportData';
+import { Download, Loader2, Eye, X, FileText } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 
 const PublicView = () => {
     const currentPeriod = getCurrentPeriod();
-    const [availableReports, setAvailableReports] = useState([]);
+    const { reports: availableReports, loading: reportsLoading } = useAvailableReports();
+
+    // State for selected period
     const [selectedYear, setSelectedYear] = useState(currentPeriod.year);
     const [selectedMonth, setSelectedMonth] = useState(currentPeriod.month);
+
+    // UI states
     const [isDownloading, setIsDownloading] = useState(false);
     const [showPreview, setShowPreview] = useState(false);
 
     const { reportData } = useReportData(selectedYear, selectedMonth);
 
-    // Load available reports on mount
+    // Set default selection when reports are loaded
     useEffect(() => {
-        const reports = getAvailableReports();
-        setAvailableReports(reports);
+        if (!reportsLoading && availableReports.length > 0) {
+            // Check if current month exists in available reports
+            const currentExists = availableReports.some(r => r.year === currentPeriod.year && r.month === currentPeriod.month);
 
-        // If current month has no report, default to most recent available
-        if (reports.length > 0) {
-            const currentExists = reports.some(r => r.year === currentPeriod.year && r.month === currentPeriod.month);
-            if (!currentExists) {
-                setSelectedYear(reports[0].year);
-                setSelectedMonth(reports[0].month);
+            if (currentExists) {
+                // Keep current period if it exists
+                setSelectedYear(currentPeriod.year);
+                setSelectedMonth(currentPeriod.month);
+            } else {
+                // Otherwise default to the most recent report
+                setSelectedYear(availableReports[0].year);
+                setSelectedMonth(availableReports[0].month);
             }
         }
-    }, []);
+    }, [reportsLoading, availableReports]);
 
     const selectedMonthLabel = `${MONTH_NAMES[selectedMonth - 1]} ${selectedYear}`;
 
@@ -146,7 +153,28 @@ const PublicView = () => {
 
             {/* Report Content */}
             <div id="report-content">
-                <ReportViewer data={reportData} month={selectedMonthLabel} />
+                {reportData?.status === 'draft' ? (
+                    // Draft Placeholder
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 md:p-20 text-center">
+                        <div className="max-w-md mx-auto space-y-4">
+                            <div className="w-16 h-16 mx-auto bg-amber-100 rounded-full flex items-center justify-center">
+                                <FileText className="w-8 h-8 text-amber-600" />
+                            </div>
+                            <h3 className="text-xl md:text-2xl font-bold text-slate-800">
+                                Report Not Published
+                            </h3>
+                            <p className="text-slate-600">
+                                The EHS Report for <span className="font-semibold">{selectedMonthLabel}</span> has not been published yet.
+                            </p>
+                            <p className="text-sm text-slate-500">
+                                Please check back later or contact the administrator.
+                            </p>
+                        </div>
+                    </div>
+                ) : (
+                    // Published Report
+                    <ReportViewer data={reportData} month={selectedMonthLabel} />
+                )}
             </div>
 
             {/* PDF Preview Modal */}

@@ -3,6 +3,9 @@ import { ref, onValue, set } from "firebase/database";
 import { db } from '../firebase';
 
 const INITIAL_DATA = {
+    // Report Status (draft | published)
+    status: 'draft',
+
     // ... (keep all initial data structure as is)
     // Section 1: Basic Info (Expanded)
     basicInfo: {
@@ -148,24 +151,65 @@ export const MONTH_NAMES = [
     "July", "August", "September", "October", "November", "December"
 ];
 
-// Helper to check for available reports (Hybrid: checks LocalStorage for now)
-// In a full Firebase app, we would query the DB for available keys
+// Hook to get available reports from Firebase
+export const useAvailableReports = () => {
+    const [reports, setReports] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const dbRef = ref(db);
+        const unsubscribe = onValue(dbRef, (snapshot) => {
+            const data = snapshot.val();
+            const availableReports = [];
+
+            if (data) {
+                Object.keys(data).forEach(key => {
+                    if (key.startsWith('ehs_report_')) {
+                        const parts = key.split('_'); // ehs, report, year, month
+                        if (parts.length === 4) {
+                            availableReports.push({
+                                year: parseInt(parts[2]),
+                                month: parseInt(parts[3]),
+                                status: data[key]?.status || 'draft', // Extract status
+                                timestamp: 0
+                            });
+                        }
+                    }
+                });
+            }
+
+            // Sort by Date Descending
+            availableReports.sort((a, b) => {
+                if (a.year !== b.year) return b.year - a.year;
+                return b.month - a.month;
+            });
+
+            setReports(availableReports);
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    return { reports, loading };
+};
+
+// Deprecated: LocalStorage helper (kept for fallback if needed, but components should prefer useAvailableReports)
 export const getAvailableReports = () => {
     const reports = [];
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key.startsWith('ehs_report_')) {
-            const parts = key.split('_'); // ehs, report, year, month
+            const parts = key.split('_');
             if (parts.length === 4) {
                 reports.push({
                     year: parseInt(parts[2]),
                     month: parseInt(parts[3]),
-                    timestamp: new Date().getTime() // Mock timestamp
+                    timestamp: new Date().getTime()
                 });
             }
         }
     }
-    // Sort by Date Descending
     return reports.sort((a, b) => {
         if (a.year !== b.year) return b.year - a.year;
         return b.month - a.month;
@@ -272,24 +316,22 @@ export const useReportData = (year, month) => {
 
     // Update function to write to Firebase
     const updateSection = (section, data) => {
-        // Optimistic update for UI responsiveness
-        setReportData(prev => {
-            const newData = {
-                ...prev,
-                [section]: { ...prev[section], ...data }
-            };
+        // Optimistic update
+        setReportData(prev => ({
+            ...prev,
+            [section]: { ...prev[section], ...data }
+        }));
 
-            // Write to Firebase
-            // We write the ENTIRE report data to ensure consistency, 
-            // or we could write just the section if we structure the DB path deeper
-            const reportRef = ref(db, storageKey);
-            set(reportRef, newData).catch(error => {
-                console.error("Firebase write failed:", error);
-                // Ideally revert logic here if needed
-            });
+        // Construct new data for Firebase
+        // We ensure we merge strictly with what we have in state
+        const newData = {
+            ...reportData,
+            [section]: { ...(reportData[section] || {}), ...data }
+        };
 
-            return newData;
-        });
+        // Write to Firebase and return promise
+        const reportRef = ref(db, storageKey);
+        return set(reportRef, newData);
     };
 
     // New helper to overwrite entire data (useful for migration/reset)
