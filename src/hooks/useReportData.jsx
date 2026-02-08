@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ref, onValue, set } from "firebase/database";
 import { db } from '../firebase';
 
@@ -316,22 +316,21 @@ export const useReportData = (year, month) => {
 
     // Update function to write to Firebase
     const updateSection = (section, data) => {
-        // Optimistic update
-        setReportData(prev => ({
-            ...prev,
-            [section]: { ...prev[section], ...data }
-        }));
+        // Use functional update to get latest state and compute new data
+        let newDataForFirebase;
 
-        // Construct new data for Firebase
-        // We ensure we merge strictly with what we have in state
-        const newData = {
-            ...reportData,
-            [section]: { ...(reportData[section] || {}), ...data }
-        };
+        setReportData(prev => {
+            const newData = {
+                ...prev,
+                [section]: { ...prev[section], ...data }
+            };
+            newDataForFirebase = newData; // Capture for Firebase
+            return newData;
+        });
 
-        // Write to Firebase and return promise
+        // Write to Firebase using the captured data
         const reportRef = ref(db, storageKey);
-        return set(reportRef, newData);
+        return set(reportRef, newDataForFirebase);
     };
 
     // New helper to overwrite entire data (useful for migration/reset)
