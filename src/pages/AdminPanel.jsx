@@ -257,7 +257,12 @@ const AdminPanel = () => {
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                     <div className="p-4 md:p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                         <div>
-                            <h2 className="text-lg md:text-xl font-bold text-slate-800">{SECTIONS[activeSection]}</h2>
+                            <div className="flex items-center gap-2">
+                                <h2 className="text-sm md:text-xl font-bold text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis max-w-[200px] md:max-w-none tracking-tighter md:tracking-normal">{SECTIONS[activeSection]}</h2>
+                                <span className="md:hidden text-[10px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 whitespace-nowrap">
+                                    #{activeSection + 1}
+                                </span>
+                            </div>
                             <p className="text-xs md:text-sm text-slate-500 hidden md:block">Section {activeSection + 1}</p>
                         </div>
                         {activeSection !== 4 && ( // Hide Save button for Incidents tab as they save individually

@@ -172,3 +172,382 @@ screen {
     gap: 20px !important;
   }
 }
+
+/* ========================================
+   CORPORATE PDF STYLING (FORMAL REPORT)
+   ======================================== */
+
+/* PDF Page Header - Repeats on each page */
+.pdf-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #1e3a5f;
+  margin-bottom: 20px;
+}
+
+.pdf-page-header .company-logo {
+  height: 40px;
+  width: auto;
+}
+
+.pdf-page-header .company-name {
+  font-size: 10pt;
+  font-weight: 700;
+  color: #1e3a5f;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pdf-page-header .report-title {
+  font-size: 9pt;
+  color: #666;
+  text-align: right;
+}
+
+/* PDF Page Footer - Positioned at bottom */
+.pdf-page-footer {
+  position: fixed;
+  bottom: 15mm;
+  left: 20mm;
+  right: 20mm;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid #ddd;
+  font-size: 8pt;
+  color: #888;
+}
+
+.pdf-page-footer .confidential {
+  font-style: italic;
+  color: #c00;
+}
+
+.pdf-page-footer .page-number {
+  font-weight: 600;
+  color: #333;
+}
+
+/* PDF Cover Page */
+.pdf-cover-page {
+  min-height: 257mm;
+  display: flex;
+  flex-direction: column;
+  page-break-after: always;
+}
+
+.pdf-cover-header {
+  text-align: center;
+  padding: 30px 0;
+  border-bottom: 3px solid #1e3a5f;
+  margin-bottom: 40px;
+}
+
+.pdf-cover-header .logo-large {
+  height: 80px;
+  width: auto;
+  margin-bottom: 15px;
+}
+
+.pdf-cover-header .company-name-large {
+  font-size: 18pt;
+  font-weight: 800;
+  color: #1e3a5f;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+.pdf-cover-title {
+  text-align: center;
+  margin: 60px 0;
+}
+
+.pdf-cover-title h1 {
+  font-size: 24pt;
+  font-weight: 700;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin: 0 0 10px 0;
+}
+
+.pdf-cover-title .period {
+  font-size: 14pt;
+  color: #666;
+  font-weight: 500;
+}
+
+/* PDF Section Headers */
+.pdf-section-header {
+  font-size: 14pt;
+  font-weight: 700;
+  color: #1e3a5f;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #1e3a5f;
+  margin-bottom: 15px;
+  page-break-after: avoid;
+}
+
+.pdf-subsection-header {
+  font-size: 11pt;
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 15px 0 10px 0;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #ccc;
+}
+
+/* PDF Tables - Corporate Style */
+.pdf-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0 20px 0;
+  font-size: 9pt;
+}
+
+.pdf-table th {
+  background-color: #1e3a5f;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 8pt;
+  letter-spacing: 0.5px;
+  padding: 10px 8px;
+  text-align: left;
+  border: 1px solid #1e3a5f;
+}
+
+.pdf-table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  vertical-align: top;
+}
+
+.pdf-table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.pdf-table tr {
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+
+/* PDF Info Grid */
+.pdf-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin: 15px 0;
+}
+
+.pdf-info-box {
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.pdf-info-box .label {
+  font-size: 8pt;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.pdf-info-box .value {
+  font-size: 11pt;
+  font-weight: 600;
+  color: #333;
+}
+
+/* PDF KPI Cards */
+.pdf-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.pdf-kpi-card {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.pdf-kpi-card .kpi-label {
+  font-size: 7pt;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.pdf-kpi-card .kpi-value {
+  font-size: 16pt;
+  font-weight: 800;
+  color: #1e3a5f;
+}
+
+.pdf-kpi-card .kpi-value.danger {
+  color: #c00;
+}
+
+/* PDF Inspection Cards */
+.pdf-inspection-card {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.pdf-inspection-header {
+  background: #f1f5f9;
+  padding: 10px 12px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pdf-inspection-header .title {
+  font-weight: 600;
+  font-size: 10pt;
+  color: #333;
+}
+
+.pdf-inspection-header .badge {
+  font-size: 8pt;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+.pdf-inspection-header .badge.open {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.pdf-inspection-header .badge.closed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.pdf-inspection-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  padding: 15px;
+}
+
+.pdf-inspection-column {
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pdf-inspection-column .column-header {
+  padding: 8px 10px;
+  font-size: 8pt;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.pdf-inspection-column .column-header.nc {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.pdf-inspection-column .column-header.ca {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.pdf-inspection-column .column-image {
+  height: 120px;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.pdf-inspection-column .column-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pdf-inspection-column .column-text {
+  padding: 10px;
+  font-size: 9pt;
+  color: #333;
+}
+
+/* PDF List Styles */
+.pdf-list {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.pdf-list li {
+  font-size: 10pt;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.pdf-list li::marker {
+  color: #1e3a5f;
+}
+
+/* PDF Signature Section */
+.pdf-signature-section {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.pdf-signature-box {
+  text-align: center;
+}
+
+.pdf-signature-box .line {
+  border-top: 1px solid #333;
+  width: 80%;
+  margin: 40px auto 10px;
+}
+
+.pdf-signature-box .role {
+  font-size: 10pt;
+  font-weight: 600;
+  color: #333;
+}
+
+.pdf-signature-box .name-date {
+  font-size: 9pt;
+  color: #666;
+  margin-top: 5px;
+}
+
+/* Force page breaks */
+.pdf-page-break {
+  page-break-before: always;
+  break-before: page;
+}
+
+/* Keep together */
+.pdf-keep-together {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}

@@ -13,13 +13,24 @@ import FFHIncidentView from './FFHIncidentView';
 // --- UTILITY: SECTION HEADER (Matches Screenshot Style) ---
 // Used for "Key Performance Indicators", "Incidents", etc.
 const SectionHeader = ({ icon: Icon, title, sectionNum, colorClass, bgClass }) => (
-    <div className="flex items-center gap-3 mb-6">
-        <div className={`p-2 rounded-lg ${bgClass} ${colorClass} shadow-sm`}>
-            <Icon size={24} />
+    <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
+        <div className={`p-1.5 md:p-2 rounded-lg ${bgClass} ${colorClass} shadow-sm flex-shrink-0`}>
+            <Icon className="w-4 h-4 md:w-6 md:h-6" />
         </div>
-        <h3 className="text-lg font-bold text-slate-700 uppercase tracking-wider">{title}</h3>
-        <div className="flex-1 h-px bg-slate-200 ml-4"></div>
-        <span className="text-xs font-bold text-slate-300 uppercase tracking-widest">Section {sectionNum}</span>
+        <h3 className="text-sm md:text-lg font-bold text-slate-700 uppercase tracking-tighter md:tracking-wider whitespace-nowrap overflow-hidden text-ellipsis">
+            {title}
+        </h3>
+        <div className="flex-1 h-px bg-slate-200 ml-2 md:ml-4"></div>
+
+        {/* PC View: As requested, same style */}
+        <span className="hidden md:inline text-xs font-bold text-slate-300 uppercase tracking-widest whitespace-nowrap">
+            Section {sectionNum}
+        </span>
+
+        {/* Mobile View: Smart Badge */}
+        <span className="md:hidden text-[9px] font-black text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200 whitespace-nowrap">
+            SEC {sectionNum}
+        </span>
     </div>
 );
 
@@ -67,12 +78,12 @@ const WebLayout = ({ data, month }) => {
                         </div>
                         <div className="text-center group hover:-translate-y-0.5 transition-transform duration-300">
                             <p className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 md:mb-2 group-hover:text-blue-500 transition-colors">LTI Free Days</p>
-                            <p className="text-2xl md:text-3xl font-black text-blue-600 tabular-nums">1,240</p>
+                            <p className="text-lg md:text-3xl font-black text-blue-600 tabular-nums">1,240</p>
                         </div>
                         <div className="text-center group hover:-translate-y-0.5 transition-transform duration-300">
                             <p className="text-[9px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 md:mb-2 group-hover:text-purple-500 transition-colors">Compliance Score</p>
                             <div className="flex items-center justify-center gap-2">
-                                <p className="text-2xl md:text-3xl font-black text-slate-800 tabular-nums">98%</p>
+                                <p className="text-lg md:text-3xl font-black text-slate-800 tabular-nums">98%</p>
                             </div>
                         </div>
                     </div>
@@ -84,9 +95,9 @@ const WebLayout = ({ data, month }) => {
                 <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
-                            <Users size={20} />
+                            <Users size={16} className="md:w-[20px] md:h-[20px]" />
                         </div>
-                        <h3 className="text-lg font-bold text-slate-800">Project Overview</h3>
+                        <h3 className="text-sm md:text-lg font-bold text-slate-800">Project Overview</h3>
                     </div>
                     <div className="space-y-4">
                         <div>
@@ -103,12 +114,12 @@ const WebLayout = ({ data, month }) => {
                 <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-2 bg-slate-50 text-slate-600 rounded-lg">
-                            <Users size={20} />
+                            <Users size={16} className="md:w-[20px] md:h-[20px]" />
                         </div>
-                        <h3 className="text-lg font-bold text-slate-800">Workforce Dynamics</h3>
+                        <h3 className="text-sm md:text-lg font-bold text-slate-800">Workforce Dynamics</h3>
                     </div>
                     <div className="space-y-2">
-                        <p className="text-slate-500 text-sm">No workforce data.</p>
+                        <p className="text-slate-500 text-xs md:text-sm">No workforce data.</p>
                     </div>
                 </div>
             </div>
@@ -128,7 +139,7 @@ const WebLayout = ({ data, month }) => {
                 </div>
                 <div className="p-8">
                     <div className="flex justify-between items-center mb-6">
-                        <h4 className="font-bold text-slate-700 uppercase tracking-wide">Monthly Objectives</h4>
+                        <h4 className="text-sm md:text-base font-bold text-slate-700 uppercase tracking-wide">Monthly Objectives</h4>
                         <span className="text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded">{month}</span>
                     </div>
                     <ul className="space-y-3">
@@ -152,13 +163,13 @@ const WebLayout = ({ data, month }) => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <div className="p-3 md:p-4 bg-slate-50/50 rounded-lg border border-slate-100 flex justify-between items-center group">
                                 <span className="text-xs md:text-sm font-semibold text-slate-600">Current Month</span>
-                                <span className="text-xl md:text-2xl font-black text-slate-800 tabular-nums group-hover:text-purple-600 transition-colors">
+                                <span className="text-lg md:text-2xl font-black text-slate-800 tabular-nums group-hover:text-purple-600 transition-colors">
                                     {data?.kpis?.manHours?.current?.toLocaleString() || '0'}
                                 </span>
                             </div>
                             <div className="p-3 md:p-4 bg-slate-50/50 rounded-lg border border-slate-100 flex justify-between items-center group">
                                 <span className="text-xs md:text-sm font-semibold text-slate-600">Cumulative (Project)</span>
-                                <span className="text-xl md:text-2xl font-black text-slate-800 tabular-nums group-hover:text-purple-600 transition-colors">
+                                <span className="text-lg md:text-2xl font-black text-slate-800 tabular-nums group-hover:text-purple-600 transition-colors">
                                     {data?.kpis?.manHours?.cumulative?.toLocaleString() || '0'}
                                 </span>
                             </div>
@@ -171,29 +182,29 @@ const WebLayout = ({ data, month }) => {
                         <div className="grid grid-cols-3 md:grid-cols-6 gap-2 md:gap-4">
                             <div className="text-center p-2 md:p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
                                 <div className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase mb-1">FATALITY</div>
-                                <div className="text-lg md:text-xl font-black text-slate-800">0</div>
+                                <div className="text-base md:text-xl font-black text-slate-800">0</div>
                             </div>
                             <div className="text-center p-2 md:p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
                                 <div className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase mb-1">LTI</div>
-                                <div className={`text-lg md:text-xl font-black ${data?.kpis?.laggingIndicators?.lti > 0 ? 'text-red-500' : 'text-slate-800'}`}>
+                                <div className={`text-base md:text-xl font-black ${data?.kpis?.laggingIndicators?.lti > 0 ? 'text-red-500' : 'text-slate-800'}`}>
                                     {data?.kpis?.laggingIndicators?.lti || 0}
                                 </div>
                             </div>
                             <div className="text-center p-2 md:p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
                                 <div className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase mb-1">LTIFR</div>
-                                <div className="text-lg md:text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.ltifr || '0.0'}</div>
+                                <div className="text-base md:text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.ltifr || '0.0'}</div>
                             </div>
                             <div className="text-center p-2 md:p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
                                 <div className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase mb-1">TRIR</div>
-                                <div className="text-lg md:text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.trir || '0.0'}</div>
+                                <div className="text-base md:text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.trir || '0.0'}</div>
                             </div>
                             <div className="text-center p-2 md:p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
                                 <div className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase mb-1">FIRST AID</div>
-                                <div className="text-lg md:text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.firstAid || 0}</div>
+                                <div className="text-base md:text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.firstAid || 0}</div>
                             </div>
                             <div className="text-center p-2 md:p-3 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
                                 <div className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase mb-1">NEAR MISS</div>
-                                <div className="text-lg md:text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.nearMiss || 0}</div>
+                                <div className="text-base md:text-xl font-black text-slate-800">{data?.kpis?.laggingIndicators?.nearMiss || 0}</div>
                             </div>
                         </div>
                     </div>
@@ -493,10 +504,10 @@ const WebLayout = ({ data, month }) => {
                             </div>
                         ))
                     ) : (
-                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-12 text-center">
-                            <ClipboardCheck className="w-16 h-16 mx-auto mb-4 text-slate-200" />
-                            <p className="text-slate-500 font-medium">No site inspections recorded for this reporting period.</p>
-                            <p className="text-slate-400 text-sm mt-1">Observations will appear here once documented.</p>
+                        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-8 md:p-12 text-center">
+                            <ClipboardCheck className="w-10 h-10 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 text-slate-200" />
+                            <p className="text-sm md:text-base text-slate-500 font-medium">No site inspections recorded for this reporting period.</p>
+                            <p className="text-xs md:text-sm text-slate-400 mt-1">Observations will appear here once documented.</p>
                         </div>
                     )}
                 </div>
@@ -519,9 +530,9 @@ const WebLayout = ({ data, month }) => {
                         <div key={`ffh-web-${i}`}><FFHIncidentView incident={inc} /></div>
                     ))}
                     {(!data?.incidents?.fireIncidents?.length && !data?.incidents?.firstAidIncidents?.length && !data?.incidents?.ffhIncidents?.length) && (
-                        <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm text-center">
-                            <CheckCircle className="w-12 h-12 text-emerald-200 mx-auto mb-4" />
-                            <p className="text-slate-500 font-medium">No incidents recorded for this month.</p>
+                        <div className="bg-white p-8 md:p-8 rounded-xl border border-slate-200 shadow-sm text-center">
+                            <CheckCircle className="w-10 h-10 md:w-12 md:h-12 text-emerald-200 mx-auto mb-3 md:mb-4" />
+                            <p className="text-sm md:text-base text-slate-500 font-medium">No incidents recorded for this month.</p>
                         </div>
                     )}
                 </div>
@@ -536,26 +547,26 @@ const WebLayout = ({ data, month }) => {
                     <div className="bg-white rounded-xl border border-slate-200 shadow-sm mb-6 overflow-hidden">
                         <div className="bg-slate-50 border-b border-slate-100 px-6 py-4 flex items-center gap-3">
                             <div className="p-2 bg-white border border-slate-200 rounded-lg shadow-sm text-blue-700">
-                                <BookOpen size={18} />
+                                <BookOpen size={16} className="md:w-[18px] md:h-[18px]" />
                             </div>
-                            <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Training & Awareness</h4>
+                            <h4 className="text-xs md:text-sm font-bold text-slate-800 uppercase tracking-wider">Training & Awareness</h4>
                         </div>
                         <div className="p-6 space-y-6">
                             {/* Induction */}
                             {data?.programs?.training?.inductionConducted && (
                                 <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-100">
-                                    <CheckCircle2 size={18} className="text-blue-600" />
-                                    <span className="text-sm text-slate-700 font-medium">Safety Induction Conducted</span>
-                                    <span className="ml-auto text-sm font-bold text-blue-700 bg-white px-2 py-1 rounded">{data?.programs?.training?.inductionParticipants || 0} Participants</span>
+                                    <CheckCircle2 size={16} className="text-blue-600 md:w-[18px] md:h-[18px]" />
+                                    <span className="text-xs md:text-sm text-slate-700 font-medium">Safety Induction Conducted</span>
+                                    <span className="ml-auto text-xs md:text-sm font-bold text-blue-700 bg-white px-2 py-1 rounded">{data?.programs?.training?.inductionParticipants || 0} Participants</span>
                                 </div>
                             )}
 
                             {/* Toolbox Talks */}
                             {data?.programs?.training?.toolboxTalks?.length > 0 && (
                                 <div>
-                                    <h5 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Toolbox Talks (TBT)</h5>
+                                    <h5 className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Toolbox Talks (TBT)</h5>
                                     <div className="overflow-hidden border border-slate-200 rounded-lg">
-                                        <table className="w-full text-sm">
+                                        <table className="w-full text-xs md:text-sm">
                                             <thead className="bg-slate-50">
                                                 <tr>
                                                     <th className="px-4 py-2 text-left text-xs font-bold text-slate-500 uppercase">Date</th>
@@ -580,9 +591,9 @@ const WebLayout = ({ data, month }) => {
                             {/* Specific Trainings */}
                             {data?.programs?.training?.specificTrainings?.length > 0 && (
                                 <div>
-                                    <h5 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Specific Trainings</h5>
+                                    <h5 className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Specific Trainings</h5>
                                     <div className="overflow-hidden border border-slate-200 rounded-lg">
-                                        <table className="w-full text-sm">
+                                        <table className="w-full text-xs md:text-sm">
                                             <thead className="bg-slate-50">
                                                 <tr>
                                                     <th className="px-4 py-2 text-left text-xs font-bold text-slate-500 uppercase">Date</th>
@@ -801,7 +812,7 @@ const WebLayout = ({ data, month }) => {
                         <div className="space-y-6">
                             <div className="border border-slate-200 rounded-xl overflow-hidden">
                                 <table className="w-full text-sm text-left">
-                                    <thead className="bg-slate-50 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                    <thead className="bg-slate-50 text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider">
                                         <tr>
                                             <th className="px-6 py-4 border-b border-slate-200">Permit Type</th>
                                             <th className="px-6 py-4 border-b border-slate-200 text-center">Opened</th>
@@ -809,7 +820,7 @@ const WebLayout = ({ data, month }) => {
                                             <th className="px-6 py-4 border-b border-slate-200 text-center">Violations</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-slate-100">
+                                    <tbody className="divide-y divide-slate-100 text-xs md:text-sm">
                                         {data.highRiskWork.permits.map((p, i) => (
                                             <tr key={i} className="hover:bg-slate-50/50 transition-colors">
                                                 <td className="px-6 py-4 font-medium text-slate-700">{p.type}</td>
@@ -860,7 +871,7 @@ const WebLayout = ({ data, month }) => {
                         </div>
                         <div className="p-4 bg-rose-50/50 rounded-lg border border-rose-100">
                             <p className="text-[10px] font-bold text-rose-600 uppercase tracking-wider mb-1">Spills</p>
-                            <p className="text-2xl font-black text-rose-600">{data?.environment?.spills || 0}</p>
+                            <p className="text-lg md:text-2xl font-black text-rose-600">{data?.environment?.spills || 0}</p>
                         </div>
                     </div>
                 </div>
@@ -948,200 +959,525 @@ const WebLayout = ({ data, month }) => {
     );
 };
 
-// --- COMPONENT: PRINT LAYOUT (The Strict A4 PDF Version) ---
+// --- COMPONENT: PRINT LAYOUT (Corporate PDF Version) ---
 const PrintLayout = ({ data, month }) => {
+    const COMPANY_NAME = "United Chattogram Power Limited";
+
     return (
-        <div className="report-container"> {/* A4 Container */}
-            {/* Same Print Layout as before, ensuring strict A4 structure */}
-            {/* --- PAGE 1: COVER / SUMMARY --- */}
-            <div className="report-section">
-                <div className="mb-8 border-b-2 border-slate-800 pb-2">
-                    <h1 className="text-2xl font-bold uppercase text-slate-800">Monthly Performance Report</h1>
-                    <p className="text-slate-500 font-medium">{month}</p>
+        <div className="report-container">
+            {/* Fixed Footer with Page Numbers (appears on all pages via CSS) */}
+            <div className="pdf-page-footer">
+                <span className="confidential">CONFIDENTIAL - For Internal Use Only</span>
+                <span>Developed by Sifat Hasan Apu</span>
+            </div>
+
+            {/* ==================== PAGE 1: COVER PAGE ==================== */}
+            <div className="pdf-cover-page">
+                <div className="pdf-cover-header">
+                    <img src="/logo.svg" alt="Company Logo" className="logo-large" />
+                    <p className="company-name-large">{COMPANY_NAME}</p>
                 </div>
-                <div className="report-section">
-                    <h2 className="text-xl font-bold text-slate-900 mb-1">{data?.basicInfo?.projectName}</h2>
-                    <p className="text-slate-600 mb-6">{data?.basicInfo?.location}</p>
-                    <table className="ehs-table">
+
+                <div className="pdf-cover-title">
+                    <h1>Monthly EHS Performance Report</h1>
+                    <p className="period">{month}</p>
+                </div>
+
+                {/* Project Info */}
+                <div className="pdf-info-grid" style={{ marginTop: '40px' }}>
+                    <div className="pdf-info-box">
+                        <div className="label">Project Name</div>
+                        <div className="value">{data?.basicInfo?.projectName || '-'}</div>
+                    </div>
+                    <div className="pdf-info-box">
+                        <div className="label">Location</div>
+                        <div className="value">{data?.basicInfo?.location || '-'}</div>
+                    </div>
+                    <div className="pdf-info-box">
+                        <div className="label">Client</div>
+                        <div className="value">{data?.basicInfo?.client || '-'}</div>
+                    </div>
+                    <div className="pdf-info-box">
+                        <div className="label">Contractor</div>
+                        <div className="value">{data?.basicInfo?.contractor || 'EPC Consortium'}</div>
+                    </div>
+                </div>
+
+                {/* Key Stats Summary */}
+                <div style={{ marginTop: '40px' }}>
+                    <h3 className="pdf-subsection-header">Executive Summary</h3>
+                    <table className="pdf-table">
                         <thead>
                             <tr>
-                                <th>MANPOWER</th>
-                                <th>MAN-HOURS</th>
-                                <th>LTI FREE DAYS</th>
-                                <th>COMPLIANCE</th>
+                                <th>Total Manpower</th>
+                                <th>Man-Hours (Month)</th>
+                                <th>Man-Hours (Cumulative)</th>
+                                <th>LTI Free Days</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{data?.basicInfo?.manpower?.total}+</td>
-                                <td>{data?.kpis?.manHours?.current?.toLocaleString()}</td>
-                                <td>1,240</td>
-                                <td>{data?.siteInspections?.findings?.length || 0} Findings</td>
+                                <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{data?.basicInfo?.manpower?.total || '0'}+</td>
+                                <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{data?.kpis?.manHours?.current?.toLocaleString() || '0'}</td>
+                                <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{data?.kpis?.manHours?.cumulative?.toLocaleString() || '0'}</td>
+                                <td style={{ textAlign: 'center', fontWeight: 'bold' }}>1,240</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-                {/* ... other print sections ... */}
+
+                {/* Policy Statement */}
+                {data?.policyObjectives?.policyStatement && (
+                    <div style={{ marginTop: '30px' }} className="pdf-keep-together">
+                        <h3 className="pdf-subsection-header">Policy Statement</h3>
+                        <p style={{ fontSize: '10pt', lineHeight: '1.6', color: '#333' }}>
+                            {data.policyObjectives.policyStatement}
+                        </p>
+                    </div>
+                )}
+
+                {/* Monthly Objectives */}
+                {data?.policyObjectives?.objectives?.length > 0 && (
+                    <div style={{ marginTop: '20px' }} className="pdf-keep-together">
+                        <h3 className="pdf-subsection-header">Monthly Objectives</h3>
+                        <ul className="pdf-list">
+                            {data.policyObjectives.objectives.map((obj, i) => (
+                                <li key={i}>{obj}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
 
-            {/* --- SECTION 3: KPIs --- */}
-            <div className="report-section">
-                <h3 className="text-lg font-bold uppercase border-b border-slate-300 mb-4 pb-1 text-slate-800">Key Performance Indicators</h3>
-                {/* KPI Table or Grid for print */}
-                <div className="grid grid-cols-4 gap-4 text-center">
-                    <div className="border p-2">
-                        <div className="text-xs text-gray-500">TRIR</div>
-                        <div className="font-bold">{data?.kpis?.laggingIndicators?.trir}</div>
+            {/* ==================== PAGE 2: KEY PERFORMANCE INDICATORS ==================== */}
+            <div className="pdf-page-break">
+                <div className="pdf-page-header">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <img src="/logo.svg" alt="Logo" className="company-logo" />
+                        <span className="company-name">{COMPANY_NAME}</span>
                     </div>
-                    <div className="border p-2">
-                        <div className="text-xs text-gray-500">LTIFR</div>
-                        <div className="font-bold">{data?.kpis?.laggingIndicators?.ltifr}</div>
-                    </div>
-                    <div className="border p-2">
-                        <div className="text-xs text-gray-500">First Aid</div>
-                        <div className="font-bold">{data?.incidents?.firstAidIncidents?.length}</div>
-                    </div>
-                    <div className="border p-2">
-                        <div className="text-xs text-gray-500">Fire</div>
-                        <div className="font-bold">{data?.incidents?.fireIncidents?.length}</div>
-                    </div>
+                    <span className="report-title">EHS Report - {month}</span>
                 </div>
-            </div>
 
-            {/* --- SECTION 4: SITE INSPECTIONS (Moved here in Print Layout) --- */}
-            {data?.siteInspections?.findings?.map((finding, i) => (
-                <div key={`p-insp-${i}`} className="report-section page-break mt-6">
-                    <div className="mb-4 border-b border-slate-200 pb-2 flex justify-between items-end">
-                        <div>
-                            <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Site Inspection #{i + 1}</span>
-                            <h3 className="text-lg font-bold text-slate-800">{finding.category || 'General'} <span className="text-slate-400 font-normal">/ {finding.subCategory}</span></h3>
+                <h2 className="pdf-section-header">Section 1: Key Performance Indicators</h2>
+
+                {/* Man-Hours */}
+                <h3 className="pdf-subsection-header">Man-Hours Statistics</h3>
+                <div className="pdf-info-grid">
+                    <div className="pdf-info-box">
+                        <div className="label">Current Month</div>
+                        <div className="value" style={{ fontSize: '18pt', color: '#1e3a5f' }}>
+                            {data?.kpis?.manHours?.current?.toLocaleString() || '0'}
                         </div>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="border border-red-200 bg-red-50/10 rounded overflow-hidden">
-                            <div className="bg-red-50 p-2 border-b border-red-100 flex justify-between items-center">
-                                <span className="text-[10px] font-bold text-red-600 uppercase">Non-Compliance</span>
-                                <XCircle size={14} className="text-red-500" />
-                            </div>
-                            <div className="aspect-video bg-slate-100 relative">
-                                {finding.nonCompliance?.image && (
-                                    <img src={finding.nonCompliance.image} className="w-full h-full object-cover" alt="NC" />
-                                )}
-                            </div>
-                            <div className="p-3">
-                                <p className="text-sm text-slate-800">{finding.nonCompliance?.description}</p>
-                            </div>
-                        </div>
-
-                        <div className="border border-emerald-200 bg-emerald-50/10 rounded overflow-hidden">
-                            <div className="bg-emerald-50 p-2 border-b border-emerald-100 flex justify-between items-center">
-                                <span className="text-[10px] font-bold text-emerald-600 uppercase">Corrective Action</span>
-                                <CheckCircle size={14} className="text-emerald-500" />
-                            </div>
-                            <div className="aspect-video bg-slate-100 relative">
-                                {finding.correctiveAction?.image && (
-                                    <img src={finding.correctiveAction.image} className="w-full h-full object-cover" alt="CA" />
-                                )}
-                            </div>
-                            <div className="p-3">
-                                <p className="text-sm text-slate-800">{finding.correctiveAction?.description}</p>
-                            </div>
+                    <div className="pdf-info-box">
+                        <div className="label">Cumulative (Project)</div>
+                        <div className="value" style={{ fontSize: '18pt', color: '#1e3a5f' }}>
+                            {data?.kpis?.manHours?.cumulative?.toLocaleString() || '0'}
                         </div>
                     </div>
                 </div>
-            ))}
 
-            {/* --- SECTION 5: INCIDENTS --- */}
-            <div className="report-section">
-                <h3 className="text-lg font-bold uppercase border-b border-slate-300 mb-4 pb-1 text-slate-800">Incident Log</h3>
-                <table className="ehs-table">
-                    <thead><tr><th>Date</th><th>Type</th><th>Description</th></tr></thead>
+                {/* Lagging Indicators */}
+                <h3 className="pdf-subsection-header">Lagging Indicators</h3>
+                <div className="pdf-kpi-grid">
+                    <div className="pdf-kpi-card">
+                        <div className="kpi-label">Fatality</div>
+                        <div className="kpi-value">0</div>
+                    </div>
+                    <div className="pdf-kpi-card">
+                        <div className="kpi-label">LTI</div>
+                        <div className={`kpi-value ${data?.kpis?.laggingIndicators?.lti > 0 ? 'danger' : ''}`}>
+                            {data?.kpis?.laggingIndicators?.lti || 0}
+                        </div>
+                    </div>
+                    <div className="pdf-kpi-card">
+                        <div className="kpi-label">LTIFR</div>
+                        <div className="kpi-value">{data?.kpis?.laggingIndicators?.ltifr || '0.00'}</div>
+                    </div>
+                    <div className="pdf-kpi-card">
+                        <div className="kpi-label">TRIR</div>
+                        <div className="kpi-value">{data?.kpis?.laggingIndicators?.trir || '0.00'}</div>
+                    </div>
+                    <div className="pdf-kpi-card">
+                        <div className="kpi-label">First Aid</div>
+                        <div className="kpi-value">{data?.kpis?.laggingIndicators?.firstAid || 0}</div>
+                    </div>
+                    <div className="pdf-kpi-card">
+                        <div className="kpi-label">Near Miss</div>
+                        <div className="kpi-value">{data?.kpis?.laggingIndicators?.nearMiss || 0}</div>
+                    </div>
+                </div>
+
+                {/* Training Statistics */}
+                <h3 className="pdf-subsection-header">Training Statistics</h3>
+                <table className="pdf-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th style={{ textAlign: 'center' }}>Sessions</th>
+                            <th style={{ textAlign: 'center' }}>Participants</th>
+                            <th style={{ textAlign: 'center' }}>Man-Hours</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        {data?.incidents?.fireIncidents?.map((inc, i) => (
-                            <tr key={i}><td>{inc.date}</td><td>Fire</td><td>{inc.location}</td></tr>
-                        ))}
-                        {data?.incidents?.firstAidIncidents?.map((inc, i) => (
-                            <tr key={i}><td>{inc.dateOfInjury}</td><td>First Aid - {inc.natureOfInjury}</td><td>{inc.ipName}</td></tr>
-                        ))}
-                        {data?.incidents?.ffhIncidents?.map((inc, i) => (
-                            <tr key={i}><td>N/A</td><td>FFH - {inc.exactHeight}</td><td>{inc.location}</td></tr>
-                        ))}
-                        {(!data?.incidents?.fireIncidents?.length && !data?.incidents?.firstAidIncidents?.length) && <tr><td colSpan="3">No incidents.</td></tr>}
+                        <tr>
+                            <td>Safety Induction</td>
+                            <td style={{ textAlign: 'center' }}>{data?.programs?.training?.inductionConducted ? '1' : '0'}</td>
+                            <td style={{ textAlign: 'center' }}>{data?.programs?.training?.inductionParticipants || 0}</td>
+                            <td style={{ textAlign: 'center' }}>-</td>
+                        </tr>
+                        <tr>
+                            <td>Toolbox Talks (TBT)</td>
+                            <td style={{ textAlign: 'center' }}>{data?.programs?.training?.toolboxTalks?.length || 0}</td>
+                            <td style={{ textAlign: 'center' }}>
+                                {data?.programs?.training?.toolboxTalks?.reduce((sum, t) => sum + (t.participants || 0), 0) || 0}
+                            </td>
+                            <td style={{ textAlign: 'center' }}>-</td>
+                        </tr>
+                        <tr>
+                            <td>Specific Trainings</td>
+                            <td style={{ textAlign: 'center' }}>{data?.programs?.training?.specificTrainings?.length || 0}</td>
+                            <td style={{ textAlign: 'center' }}>
+                                {data?.programs?.training?.specificTrainings?.reduce((sum, t) => sum + (t.participants || 0), 0) || 0}
+                            </td>
+                            <td style={{ textAlign: 'center' }}>{data?.programs?.training?.totalManHours || '-'}</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
 
-            {/* Detailed Incident Cards (Forces New Page for each usually) */}
-            {data?.incidents?.fireIncidents?.map((inc, i) => (
-                <div key={`p-fire-${i}`} className="report-section mt-8">
-                    <FireIncidentView incident={inc} />
-                </div>
-            ))}
-            {data?.incidents?.firstAidIncidents?.map((inc, i) => (
-                <div key={`p-fa-${i}`} className="report-section mt-8">
-                    <FirstAidIncidentView incident={inc} />
-                </div>
-            ))}
-            {data?.incidents?.ffhIncidents?.map((inc, i) => (
-                <div key={`p-ffh-${i}`} className="report-section mt-8">
-                    <FFHIncidentView incident={inc} />
-                </div>
-            ))}
+            {/* ==================== SITE INSPECTIONS ==================== */}
+            {data?.siteInspections?.findings?.length > 0 && (
+                <div className="pdf-page-break">
+                    <div className="pdf-page-header">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <img src="/logo.svg" alt="Logo" className="company-logo" />
+                            <span className="company-name">{COMPANY_NAME}</span>
+                        </div>
+                        <span className="report-title">EHS Report - {month}</span>
+                    </div>
 
-            {/* --- SECTIONS 7-10 PRINT SUMMARY --- */}
-            <div className="report-section page-break">
-                <h3 className="text-lg font-bold uppercase border-b border-slate-300 mb-4 pb-1 text-slate-800">Operational Controls & Environment</h3>
+                    <h2 className="pdf-section-header">Section 2: Site Inspection / Observation Report</h2>
 
-                <div className="mb-6">
-                    <h4 className="font-bold text-sm mb-2 uppercase">High Risk Work (Permits)</h4>
-                    <table className="ehs-table">
-                        <thead><tr><th>Type</th><th>Opened</th><th>Closed</th><th>Violations</th></tr></thead>
+                    {data.siteInspections.findings.map((finding, i) => (
+                        <div key={i} className="pdf-inspection-card">
+                            <div className="pdf-inspection-header">
+                                <span className="title">
+                                    #{i + 1} - {finding.category || 'General'} / {finding.subCategory || '-'}
+                                </span>
+                                <span className={`badge ${finding.status === 'closed' ? 'closed' : 'open'}`}>
+                                    {finding.status === 'closed' ? 'CLOSED' : 'OPEN'}
+                                </span>
+                            </div>
+                            <div className="pdf-inspection-body">
+                                <div className="pdf-inspection-column">
+                                    <div className="column-header nc">Non-Compliance</div>
+                                    <div className="column-image">
+                                        {finding.nonCompliance?.image ? (
+                                            <img src={finding.nonCompliance.image} alt="NC" />
+                                        ) : (
+                                            <span style={{ color: '#999', fontSize: '9pt' }}>No Image</span>
+                                        )}
+                                    </div>
+                                    <div className="column-text">{finding.nonCompliance?.description || '-'}</div>
+                                </div>
+                                <div className="pdf-inspection-column">
+                                    <div className="column-header ca">Corrective Action</div>
+                                    <div className="column-image">
+                                        {finding.correctiveAction?.image ? (
+                                            <img src={finding.correctiveAction.image} alt="CA" />
+                                        ) : (
+                                            <span style={{ color: '#999', fontSize: '9pt' }}>No Image</span>
+                                        )}
+                                    </div>
+                                    <div className="column-text">{finding.correctiveAction?.description || '-'}</div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* ==================== INCIDENTS SUMMARY ==================== */}
+            <div className="pdf-page-break">
+                <div className="pdf-page-header">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <img src="/logo.svg" alt="Logo" className="company-logo" />
+                        <span className="company-name">{COMPANY_NAME}</span>
+                    </div>
+                    <span className="report-title">EHS Report - {month}</span>
+                </div>
+
+                <h2 className="pdf-section-header">Section 3: Incident Log</h2>
+
+                {(data?.incidents?.fireIncidents?.length > 0 || data?.incidents?.firstAidIncidents?.length > 0 || data?.incidents?.ffhIncidents?.length > 0) ? (
+                    <table className="pdf-table">
+                        <thead>
+                            <tr>
+                                <th style={{ width: '15%' }}>Date</th>
+                                <th style={{ width: '20%' }}>Type</th>
+                                <th style={{ width: '25%' }}>Location / Person</th>
+                                <th style={{ width: '40%' }}>Description</th>
+                            </tr>
+                        </thead>
                         <tbody>
-                            {data?.highRiskWork?.permits?.map((p, i) => (
-                                <tr key={i}>
-                                    <td>{p.type}</td><td className="text-right">{p.opened}</td>
-                                    <td className="text-right">{p.closed}</td><td className="text-right">{p.violations}</td>
+                            {data?.incidents?.fireIncidents?.map((inc, i) => (
+                                <tr key={`fire-${i}`}>
+                                    <td>{inc.date || '-'}</td>
+                                    <td><strong style={{ color: '#dc2626' }}>Fire Incident</strong></td>
+                                    <td>{inc.location || '-'}</td>
+                                    <td>{inc.description || '-'}</td>
+                                </tr>
+                            ))}
+                            {data?.incidents?.firstAidIncidents?.map((inc, i) => (
+                                <tr key={`fa-${i}`}>
+                                    <td>{inc.dateOfInjury || '-'}</td>
+                                    <td><strong style={{ color: '#f59e0b' }}>First Aid - {inc.natureOfInjury}</strong></td>
+                                    <td>{inc.ipName || '-'}</td>
+                                    <td>{inc.description || '-'}</td>
+                                </tr>
+                            ))}
+                            {data?.incidents?.ffhIncidents?.map((inc, i) => (
+                                <tr key={`ffh-${i}`}>
+                                    <td>-</td>
+                                    <td><strong style={{ color: '#7c3aed' }}>Fall From Height</strong></td>
+                                    <td>{inc.location || '-'}</td>
+                                    <td>Height: {inc.exactHeight || '-'}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
-                    {data?.highRiskWork?.highlights && (
-                        <div className="mt-2 p-2 border border-slate-200 bg-slate-50 rounded">
-                            <h5 className="font-bold text-xs uppercase text-slate-500">Highlights</h5>
-                            <p className="text-sm text-slate-700 whitespace-pre-line">{data.highRiskWork.highlights}</p>
-                        </div>
-                    )}
+                ) : (
+                    <div style={{ padding: '20px', textAlign: 'center', border: '1px solid #ddd', borderRadius: '4px', color: '#666' }}>
+                        ✓ No incidents recorded for this reporting period.
+                    </div>
+                )}
+            </div>
+
+            {/* ==================== PROGRAMS & ACTIVITIES ==================== */}
+            <div className="pdf-page-break">
+                <div className="pdf-page-header">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <img src="/logo.svg" alt="Logo" className="company-logo" />
+                        <span className="company-name">{COMPANY_NAME}</span>
+                    </div>
+                    <span className="report-title">EHS Report - {month}</span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-8">
-                    <div>
-                        <h4 className="font-bold text-sm mb-2 uppercase">Environmental</h4>
-                        <ul className="text-sm list-disc pl-4">
-                            <li>Waste (Haz): {data?.environment?.waste?.hazardous}</li>
-                            <li>Waste (Non-Haz): {data?.environment?.waste?.nonHazardous}</li>
-                            <li>Water Usage: {data?.environment?.consumption?.water}</li>
-                            <li>Fuel Usage: {data?.environment?.consumption?.fuel}</li>
-                            <li>Spills: {data?.environment?.spills}</li>
-                        </ul>
+                <h2 className="pdf-section-header">Section 4: EHS Programs & Activities</h2>
+
+                {/* Training Details */}
+                {data?.programs?.training?.toolboxTalks?.length > 0 && (
+                    <div className="pdf-keep-together">
+                        <h3 className="pdf-subsection-header">Toolbox Talks (TBT)</h3>
+                        <table className="pdf-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Topic</th>
+                                    <th style={{ textAlign: 'center' }}>Participants</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.programs.training.toolboxTalks.map((tbt, i) => (
+                                    <tr key={i}>
+                                        <td>{tbt.date || '-'}</td>
+                                        <td>{tbt.topic || '-'}</td>
+                                        <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{tbt.participants || 0}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
-                    <div>
-                        <h4 className="font-bold text-sm mb-2 uppercase">Programs & Campaigns</h4>
-                        <ul className="text-sm list-disc pl-4">
-                            {data?.programs?.training?.inductionConducted && <li>Induction: {data.programs.training.inductionParticipants} Pax</li>}
-                            {data?.programs?.training?.toolboxTalks?.length > 0 && <li>TBTs: {data.programs.training.toolboxTalks.length} Conducted</li>}
-                            {data?.programs?.emergencyPreparedness?.mockDrillConducted &&
-                                <li>Drill: {data.programs.emergencyPreparedness.mockDrillDetails?.type} ({data.programs.emergencyPreparedness.mockDrillDetails?.date})</li>
-                            }
-                            {data?.programs?.campaigns?.safetyCommitteeMeeting?.held && <li>Meeting: {data.programs.campaigns.safetyCommitteeMeeting.date}</li>}
-                            {data?.programs?.campaigns?.specialDays?.map((d, i) => (
-                                <li key={i}>{d.name}</li>
+                )}
+
+                {/* Emergency Preparedness */}
+                {data?.programs?.emergencyPreparedness?.mockDrillConducted && (
+                    <div className="pdf-keep-together">
+                        <h3 className="pdf-subsection-header">Emergency Preparedness</h3>
+                        <div className="pdf-info-grid">
+                            <div className="pdf-info-box">
+                                <div className="label">Mock Drill Type</div>
+                                <div className="value">{data.programs.emergencyPreparedness.mockDrillDetails?.type || '-'}</div>
+                            </div>
+                            <div className="pdf-info-box">
+                                <div className="label">Date</div>
+                                <div className="value">{data.programs.emergencyPreparedness.mockDrillDetails?.date || '-'}</div>
+                            </div>
+                            <div className="pdf-info-box">
+                                <div className="label">Participants</div>
+                                <div className="value">{data.programs.emergencyPreparedness.mockDrillDetails?.participants || 0}</div>
+                            </div>
+                            <div className="pdf-info-box">
+                                <div className="label">Fire Equipment Inspection</div>
+                                <div className="value">{data.programs.emergencyPreparedness.fireEquipmentInspection ? '✓ Completed' : '-'}</div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Campaigns */}
+                {(data?.programs?.campaigns?.safetyCommitteeMeeting?.held || data?.programs?.campaigns?.specialDays?.length > 0) && (
+                    <div className="pdf-keep-together">
+                        <h3 className="pdf-subsection-header">Campaigns & Motivation</h3>
+                        <ul className="pdf-list">
+                            {data?.programs?.campaigns?.safetyCommitteeMeeting?.held && (
+                                <li>Safety Committee Meeting: {data.programs.campaigns.safetyCommitteeMeeting.date || '-'}</li>
+                            )}
+                            {data?.programs?.campaigns?.healthHygiene?.conducted && (
+                                <li>Health & Hygiene Activity: {data.programs.campaigns.healthHygiene.details || 'Conducted'}</li>
+                            )}
+                            {data?.programs?.campaigns?.rewardsRecognition?.given && (
+                                <li>Rewards & Recognition: {data.programs.campaigns.rewardsRecognition.details || 'Given'}</li>
+                            )}
+                            {data?.programs?.campaigns?.specialDays?.map((day, i) => (
+                                <li key={i}>Special Day: {day.name} ({day.date})</li>
                             ))}
                         </ul>
+                    </div>
+                )}
+            </div>
+
+            {/* ==================== OPERATIONAL CONTROLS & ENVIRONMENT ==================== */}
+            <div className="pdf-page-break">
+                <div className="pdf-page-header">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <img src="/logo.svg" alt="Logo" className="company-logo" />
+                        <span className="company-name">{COMPANY_NAME}</span>
+                    </div>
+                    <span className="report-title">EHS Report - {month}</span>
+                </div>
+
+                <h2 className="pdf-section-header">Section 5: High Risk Work & Environment</h2>
+
+                {/* Permits */}
+                {data?.highRiskWork?.permits?.length > 0 && (
+                    <div className="pdf-keep-together">
+                        <h3 className="pdf-subsection-header">Permit to Work Summary</h3>
+                        <table className="pdf-table">
+                            <thead>
+                                <tr>
+                                    <th>Permit Type</th>
+                                    <th style={{ textAlign: 'center' }}>Opened</th>
+                                    <th style={{ textAlign: 'center' }}>Closed</th>
+                                    <th style={{ textAlign: 'center' }}>Violations</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.highRiskWork.permits.map((p, i) => (
+                                    <tr key={i}>
+                                        <td>{p.type}</td>
+                                        <td style={{ textAlign: 'center' }}>{p.opened}</td>
+                                        <td style={{ textAlign: 'center' }}>{p.closed}</td>
+                                        <td style={{ textAlign: 'center', color: p.violations > 0 ? '#dc2626' : 'inherit', fontWeight: p.violations > 0 ? 'bold' : 'normal' }}>
+                                            {p.violations}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+
+                {/* Environmental Performance */}
+                <h3 className="pdf-subsection-header">Environmental Performance</h3>
+                <div className="pdf-info-grid">
+                    <div className="pdf-info-box">
+                        <div className="label">Hazardous Waste</div>
+                        <div className="value">{data?.environment?.waste?.hazardous || '-'}</div>
+                    </div>
+                    <div className="pdf-info-box">
+                        <div className="label">Non-Hazardous Waste</div>
+                        <div className="value">{data?.environment?.waste?.nonHazardous || '-'}</div>
+                    </div>
+                    <div className="pdf-info-box">
+                        <div className="label">Water Consumption</div>
+                        <div className="value">{data?.environment?.consumption?.water || '-'}</div>
+                    </div>
+                    <div className="pdf-info-box">
+                        <div className="label">Fuel Consumption</div>
+                        <div className="value">{data?.environment?.consumption?.fuel || '-'}</div>
+                    </div>
+                </div>
+                <div className="pdf-info-box" style={{ marginTop: '10px', textAlign: 'center' }}>
+                    <div className="label">Spills Reported</div>
+                    <div className="value" style={{ fontSize: '24pt', color: data?.environment?.spills > 0 ? '#dc2626' : '#16a34a' }}>
+                        {data?.environment?.spills || 0}
                     </div>
                 </div>
             </div>
 
+            {/* ==================== CHALLENGES & IMPROVEMENT PLAN ==================== */}
+            <div className="pdf-page-break">
+                <div className="pdf-page-header">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <img src="/logo.svg" alt="Logo" className="company-logo" />
+                        <span className="company-name">{COMPANY_NAME}</span>
+                    </div>
+                    <span className="report-title">EHS Report - {month}</span>
+                </div>
+
+                <h2 className="pdf-section-header">Section 6: Challenges & Improvement Plan</h2>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+                    {/* Challenges */}
+                    <div className="pdf-keep-together">
+                        <h3 className="pdf-subsection-header">Key Challenges</h3>
+                        {data?.issues?.challenges?.length > 0 ? (
+                            <ul className="pdf-list">
+                                {data.issues.challenges.map((c, i) => <li key={i}>{c}</li>)}
+                            </ul>
+                        ) : (
+                            <p style={{ fontSize: '10pt', color: '#666', fontStyle: 'italic' }}>No significant challenges reported.</p>
+                        )}
+                    </div>
+
+                    {/* Support Needed */}
+                    <div className="pdf-keep-together">
+                        <h3 className="pdf-subsection-header">Support & Resources Needed</h3>
+                        {data?.issues?.supportNeeded?.length > 0 ? (
+                            <ul className="pdf-list">
+                                {data.issues.supportNeeded.map((s, i) => <li key={i}>{s}</li>)}
+                            </ul>
+                        ) : (
+                            <p style={{ fontSize: '10pt', color: '#666', fontStyle: 'italic' }}>No additional support required.</p>
+                        )}
+                    </div>
+                </div>
+
+                {/* Improvement Plan */}
+                <div className="pdf-keep-together" style={{ marginTop: '30px' }}>
+                    <h3 className="pdf-subsection-header">Improvement Plan for Next Month</h3>
+                    {data?.improvementPlan?.actions?.length > 0 ? (
+                        <ul className="pdf-list">
+                            {data.improvementPlan.actions.map((a, i) => <li key={i}>{a}</li>)}
+                        </ul>
+                    ) : (
+                        <p style={{ fontSize: '10pt', color: '#666', fontStyle: 'italic' }}>Improvement plan to be determined.</p>
+                    )}
+                </div>
+
+                {/* Signature Section */}
+                <div className="pdf-signature-section" style={{ marginTop: '60px' }}>
+                    <div className="pdf-signature-box">
+                        <div className="line"></div>
+                        <div className="role">EHS Officer</div>
+                        <div className="name-date">Name: _________________ Date: _________</div>
+                    </div>
+                    <div className="pdf-signature-box">
+                        <div className="line"></div>
+                        <div className="role">Project Manager</div>
+                        <div className="name-date">Name: _________________ Date: _________</div>
+                    </div>
+                </div>
+
+                {/* Report Generation Info */}
+                <div style={{ marginTop: '60px', textAlign: 'center', fontSize: '8pt', color: '#999' }}>
+                    <p>Report Generated: {new Date().toLocaleString()}</p>
+                    <p style={{ marginTop: '5px' }}>Developed by Sifat Hasan Apu</p>
+                </div>
+            </div>
         </div>
     );
 };
