@@ -962,8 +962,8 @@ const WebLayout = ({ data, month }) => {
 // --- COMPONENT: PRINT LAYOUT (Corporate PDF Version) ---
 const PrintLayout = ({ data, month }) => {
     // Use company info from form data, fallback to defaults
-    const COMPANY_NAME = data?.basicInfo?.companyName || 'Your Company Name';
-    const COMPANY_LOGO = data?.basicInfo?.companyLogo || '/logo.svg';
+    const COMPANY_NAME = "United Chattogram Power Limited";
+    const COMPANY_LOGO = "/logo.png";
 
     return (
         <div className="report-container">

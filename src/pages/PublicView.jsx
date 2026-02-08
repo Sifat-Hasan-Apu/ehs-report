@@ -59,7 +59,14 @@ const PublicView = () => {
     const handleDownload = async () => {
         setIsDownloading(true);
 
-        const element = document.getElementById('report-content');
+        // Generate PDF from the preview content if available to avoid capturing hidden/extra
+        // layout wrappers that can create an empty first page.
+        const element =
+            document.getElementById('pdf-preview-content') ||
+            document.getElementById('report-content');
+
+        // Ensure print layout is active during PDF capture
+        document.body.classList.add('pdf-generating');
 
         const opt = {
             margin: 0,
@@ -76,9 +83,8 @@ const PublicView = () => {
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak: {
-                mode: ['avoid-all', 'css', 'legacy'],
-                before: '.pdf-page-break',
-                avoid: ['.pdf-keep-together', '.pdf-inspection-card', '.pdf-info-box', 'tr']
+                mode: ['css'],
+                before: '.pdf-page-break'
             }
         };
 
@@ -105,6 +111,10 @@ const PublicView = () => {
             alert("Failed to generate PDF. Please try again.");
         } finally {
             setIsDownloading(false);
+            // Reset print layout after generation
+            if (!showPreview) {
+                document.body.classList.remove('pdf-generating');
+            }
         }
     };
 
@@ -220,7 +230,7 @@ const PublicView = () => {
 
                         {/* Preview Content Area */}
                         <div className="flex-1 overflow-auto p-4 bg-slate-600">
-                            <div className="max-w-[210mm] mx-auto bg-white shadow-xl">
+                            <div id="pdf-preview-content" className="max-w-[210mm] mx-auto bg-white shadow-xl">
                                 <ReportViewer data={reportData} month={selectedMonthLabel} isPrintPreview={true} />
                             </div>
                         </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { ref, onValue, set } from "firebase/database";
+import { ref, onValue, set, query, orderByKey, startAt, endAt } from "firebase/database";
 import { db } from '../firebase';
 
 const INITIAL_DATA = {
@@ -158,7 +158,10 @@ export const useAvailableReports = () => {
 
     useEffect(() => {
         const dbRef = ref(db);
-        const unsubscribe = onValue(dbRef, (snapshot) => {
+        // Optimize: Only query keys starting with "ehs_report_" to avoid downloading the entire database root
+        const reportsQuery = query(dbRef, orderByKey(), startAt('ehs_report_'), endAt('ehs_report_\uf8ff'));
+
+        const unsubscribe = onValue(reportsQuery, (snapshot) => {
             const data = snapshot.val();
             const availableReports = [];
 

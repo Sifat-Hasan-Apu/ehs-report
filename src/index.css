@@ -99,6 +99,18 @@ body.pdf-generating .report-container {
   box-shadow: none !important;
 }
 
+/* Ensure first page starts immediately without blank page */
+body.pdf-generating .report-container > div:first-child {
+  page-break-before: avoid !important;
+  break-before: avoid !important;
+}
+
+/* Page break handling for PDF generation */
+body.pdf-generating .pdf-page-break {
+  page-break-before: always !important;
+  break-before: page !important;
+}
+
 /* VIEW TOGGLING (Show Web by default, Show Print only when generating) */
 .print-view {
   display: none;
@@ -219,6 +231,8 @@ screen {
   border-top: 1px solid #ddd;
   font-size: 8pt;
   color: #888;
+  z-index: 100;
+  /* Ensure footer starts appearing from first page */
 }
 
 .pdf-page-footer .confidential {
@@ -236,7 +250,7 @@ screen {
   min-height: 257mm;
   display: flex;
   flex-direction: column;
-  page-break-after: always;
+  /* Removed page-break-after: always - was creating blank first page */
 }
 
 .pdf-cover-header {
@@ -542,6 +556,12 @@ screen {
 
 /* Force page breaks */
 .pdf-page-break {
+  page-break-before: always;
+  break-before: page;
+}
+
+/* First page should not have page break before it */
+.pdf-cover-page + .pdf-page-break {
   page-break-before: always;
   break-before: page;
 }
