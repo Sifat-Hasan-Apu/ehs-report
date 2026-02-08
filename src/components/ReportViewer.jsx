@@ -961,7 +961,9 @@ const WebLayout = ({ data, month }) => {
 
 // --- COMPONENT: PRINT LAYOUT (Corporate PDF Version) ---
 const PrintLayout = ({ data, month }) => {
-    const COMPANY_NAME = "United Chattogram Power Limited";
+    // Use company info from form data, fallback to defaults
+    const COMPANY_NAME = data?.basicInfo?.companyName || 'Your Company Name';
+    const COMPANY_LOGO = data?.basicInfo?.companyLogo || '/logo.svg';
 
     return (
         <div className="report-container">
@@ -974,7 +976,7 @@ const PrintLayout = ({ data, month }) => {
             {/* ==================== PAGE 1: COVER PAGE ==================== */}
             <div className="pdf-cover-page">
                 <div className="pdf-cover-header">
-                    <img src="/logo.svg" alt="Company Logo" className="logo-large" />
+                    <img src={COMPANY_LOGO} alt="Company Logo" className="logo-large" />
                     <p className="company-name-large">{COMPANY_NAME}</p>
                 </div>
 
@@ -1053,7 +1055,7 @@ const PrintLayout = ({ data, month }) => {
             <div className="pdf-page-break">
                 <div className="pdf-page-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img src="/logo.svg" alt="Logo" className="company-logo" />
+                        <img src={COMPANY_LOGO} alt="Logo" className="company-logo" />
                         <span className="company-name">{COMPANY_NAME}</span>
                     </div>
                     <span className="report-title">EHS Report - {month}</span>
@@ -1152,7 +1154,7 @@ const PrintLayout = ({ data, month }) => {
                 <div className="pdf-page-break">
                     <div className="pdf-page-header">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <img src="/logo.svg" alt="Logo" className="company-logo" />
+                            <img src={COMPANY_LOGO} alt="Logo" className="company-logo" />
                             <span className="company-name">{COMPANY_NAME}</span>
                         </div>
                         <span className="report-title">EHS Report - {month}</span>
@@ -1203,7 +1205,7 @@ const PrintLayout = ({ data, month }) => {
             <div className="pdf-page-break">
                 <div className="pdf-page-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img src="/logo.svg" alt="Logo" className="company-logo" />
+                        <img src={COMPANY_LOGO} alt="Logo" className="company-logo" />
                         <span className="company-name">{COMPANY_NAME}</span>
                     </div>
                     <span className="report-title">EHS Report - {month}</span>
@@ -1259,7 +1261,7 @@ const PrintLayout = ({ data, month }) => {
             <div className="pdf-page-break">
                 <div className="pdf-page-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img src="/logo.svg" alt="Logo" className="company-logo" />
+                        <img src={COMPANY_LOGO} alt="Logo" className="company-logo" />
                         <span className="company-name">{COMPANY_NAME}</span>
                     </div>
                     <span className="report-title">EHS Report - {month}</span>
@@ -1343,7 +1345,7 @@ const PrintLayout = ({ data, month }) => {
             <div className="pdf-page-break">
                 <div className="pdf-page-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img src="/logo.svg" alt="Logo" className="company-logo" />
+                        <img src={COMPANY_LOGO} alt="Logo" className="company-logo" />
                         <span className="company-name">{COMPANY_NAME}</span>
                     </div>
                     <span className="report-title">EHS Report - {month}</span>
@@ -1412,7 +1414,7 @@ const PrintLayout = ({ data, month }) => {
             <div className="pdf-page-break">
                 <div className="pdf-page-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img src="/logo.svg" alt="Logo" className="company-logo" />
+                        <img src={COMPANY_LOGO} alt="Logo" className="company-logo" />
                         <span className="company-name">{COMPANY_NAME}</span>
                     </div>
                     <span className="report-title">EHS Report - {month}</span>
@@ -1482,7 +1484,17 @@ const PrintLayout = ({ data, month }) => {
     );
 };
 
-const ReportViewer = ({ data, month }) => {
+const ReportViewer = ({ data, month, isPrintPreview = false }) => {
+    // If in print preview mode (modal), only show the print layout
+    if (isPrintPreview) {
+        return (
+            <div className="report-container-wrapper">
+                <PrintLayout data={data} month={month} />
+            </div>
+        );
+    }
+
+    // Normal mode: show web view by default, print view toggled via CSS
     return (
         <div className="report-container-wrapper">
             <div className="web-view"><WebLayout data={data} month={month} /></div>

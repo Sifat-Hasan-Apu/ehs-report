@@ -279,6 +279,61 @@ const AdminPanel = () => {
                     <div className="p-4 md:p-8">
                         {activeSection === 0 && (
                             <div className="space-y-6 max-w-2xl">
+                                {/* Company Branding Section */}
+                                <div className="p-4 bg-gradient-to-r from-slate-50 to-blue-50 border border-slate-200 rounded-xl">
+                                    <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                        <Shield className="w-4 h-4 text-brand-600" />
+                                        Company Branding (for PDF)
+                                    </h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-700">Company Name</label>
+                                            <input
+                                                type="text"
+                                                name="companyName"
+                                                value={formData.companyName || ''}
+                                                onChange={handleBasicInfoChange}
+                                                className="w-full px-4 py-2 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all"
+                                                placeholder="e.g. United Chattogram Power Limited"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-700">Company Logo</label>
+                                            <div className="flex items-center gap-3">
+                                                {formData.companyLogo ? (
+                                                    <div className="relative">
+                                                        <img src={formData.companyLogo} alt="Logo" className="h-10 w-auto object-contain bg-white border border-slate-200 rounded p-1" />
+                                                        <button
+                                                            onClick={() => setFormData(prev => ({ ...prev, companyLogo: '' }))}
+                                                            className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
+                                                        >×</button>
+                                                    </div>
+                                                ) : null}
+                                                <label className="flex-1 flex items-center gap-2 px-4 py-2 bg-white border border-dashed border-slate-300 rounded-lg cursor-pointer hover:border-brand-500 hover:bg-brand-50/50 transition-all">
+                                                    <UploadCloud className="w-4 h-4 text-slate-400" />
+                                                    <span className="text-sm text-slate-500">{formData.companyLogo ? 'Change' : 'Upload Logo'}</span>
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        className="hidden"
+                                                        onChange={(e) => {
+                                                            const file = e.target.files?.[0];
+                                                            if (file) {
+                                                                const reader = new FileReader();
+                                                                reader.onload = (ev) => {
+                                                                    setFormData(prev => ({ ...prev, companyLogo: ev.target.result }));
+                                                                };
+                                                                reader.readAsDataURL(file);
+                                                            }
+                                                        }}
+                                                    />
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Project Info Section */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium text-slate-700">Project Name</label>
