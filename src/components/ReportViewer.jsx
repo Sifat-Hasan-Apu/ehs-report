@@ -962,8 +962,8 @@ const WebLayout = ({ data, month }) => {
 // --- COMPONENT: PRINT LAYOUT (Corporate PDF Version) ---
 const PrintLayout = ({ data, month }) => {
     // Use company info from form data, fallback to defaults
-    const COMPANY_NAME = "United Chattogram Power Limited";
-    const COMPANY_LOGO = "/logo.png";
+    const COMPANY_NAME = data?.basicInfo?.companyName || "United Chattogram Power Limited";
+    const COMPANY_LOGO = "/ucpl_logo_v2.png";
 
     return (
         <div className="report-container">
@@ -972,8 +972,8 @@ const PrintLayout = ({ data, month }) => {
 
             {/* ==================== PAGE 1: COVER PAGE ==================== */}
             <div className="pdf-cover-page">
-                <div className="pdf-cover-header">
-                    <img src={COMPANY_LOGO} alt="Company Logo" className="logo-large" />
+                <div className="pdf-cover-header" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                    <img src={COMPANY_LOGO} alt="Company Logo" className="logo-large" style={{ margin: '0 auto 15px auto', display: 'block' }} />
                     <p className="company-name-large">{COMPANY_NAME}</p>
                 </div>
 
@@ -1006,14 +1006,6 @@ const PrintLayout = ({ data, month }) => {
 
             {/* ==================== PAGE 2: EXECUTIVE SUMMARY & POLICY ==================== */}
             <div className="pdf-page-break">
-                <div className="pdf-page-header">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img src={COMPANY_LOGO} alt="Logo" className="company-logo" />
-                        <span className="company-name">{COMPANY_NAME}</span>
-                    </div>
-                    <span className="report-title">EHS Report - {month}</span>
-                </div>
-
                 <h2 className="pdf-section-header">Section 1: Executive Summary & Policy</h2>
 
                 {/* Key Stats Summary */}
@@ -1063,41 +1055,56 @@ const PrintLayout = ({ data, month }) => {
                                 fontSize: '8pt',
                                 backgroundColor: '#eff6ff',
                                 color: '#1d4ed8',
-                                padding: '6px 14px',
-                                borderRadius: '16px',
+                                padding: '0 14px',
+                                borderRadius: '14px',
                                 fontWeight: 'bold',
                                 border: '1px solid #dbeafe',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                lineHeight: '1',
+                                display: 'inline-block',
+                                lineHeight: '26px', // Height - 2px border
                                 height: '28px',
+                                verticalAlign: 'middle',
+                                textAlign: 'center',
                                 whiteSpace: 'nowrap'
                             }}>{month}</span>
                         </div>
-                        <ul className="pdf-objectives-list">
+                        <div className="pdf-objectives-list">
                             {data?.policyObjectives?.objectives?.length > 0 ? (
-                                data.policyObjectives.objectives.map((obj, i) => (
-                                    <li key={i} className="pdf-objectives-item">{obj}</li>
-                                ))
+                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <tbody>
+                                        {data.policyObjectives.objectives.map((obj, i) => (
+                                            <tr key={i}>
+                                                <td style={{ width: '20px', verticalAlign: 'top', paddingBottom: '15px', paddingTop: '6px' }}>
+                                                    <span style={{
+                                                        width: '6px',
+                                                        height: '6px',
+                                                        borderRadius: '50%',
+                                                        backgroundColor: '#3b82f6',
+                                                        display: 'block'
+                                                    }}></span>
+                                                </td>
+                                                <td style={{
+                                                    verticalAlign: 'top',
+                                                    paddingBottom: '15px',
+                                                    color: '#475569',
+                                                    fontSize: '10pt',
+                                                    lineHeight: '1.5'
+                                                }}>
+                                                    {obj}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             ) : (
-                                <li className="pdf-objectives-empty">No specific objectives set for this month.</li>
+                                <p className="pdf-objectives-empty" style={{ fontSize: '10pt', color: '#94a3b8', fontStyle: 'italic', margin: 0 }}>No specific objectives set for this month.</p>
                             )}
-                        </ul>
+                        </div>
                     </div>
                 </div>
             </div>
 
             {/* ==================== PAGE 3: KEY PERFORMANCE INDICATORS ==================== */}
             <div className="pdf-page-break">
-                <div className="pdf-page-header">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img src={COMPANY_LOGO} alt="Logo" className="company-logo" />
-                        <span className="company-name">{COMPANY_NAME}</span>
-                    </div>
-                    <span className="report-title">EHS Report - {month}</span>
-                </div>
-
                 <h2 className="pdf-section-header">Section 2: Key Performance Indicators</h2>
 
                 {/* Man-Hours */}
@@ -1189,48 +1196,90 @@ const PrintLayout = ({ data, month }) => {
             {/* ==================== PAGE 4: SITE INSPECTIONS ==================== */}
             {data?.siteInspections?.findings?.length > 0 && (
                 <div className="pdf-page-break">
-                    <div className="pdf-page-header">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <img src={COMPANY_LOGO} alt="Logo" className="company-logo" />
-                            <span className="company-name">{COMPANY_NAME}</span>
-                        </div>
-                        <span className="report-title">EHS Report - {month}</span>
-                    </div>
-
                     <h2 className="pdf-section-header">Section 3: Site Inspection / Observation Report</h2>
+                    <p style={{ fontSize: '9pt', color: '#64748b', marginBottom: '15px' }}>
+                        Total Observations: <strong>{data.siteInspections.findings.length}</strong> |
+                        Open: <strong style={{ color: '#dc2626' }}>{data.siteInspections.findings.filter(f => f.status !== 'closed').length}</strong> |
+                        Closed: <strong style={{ color: '#16a34a' }}>{data.siteInspections.findings.filter(f => f.status === 'closed').length}</strong>
+                    </p>
 
                     {data.siteInspections.findings.map((finding, i) => (
-                        <div key={i} className="pdf-inspection-card">
-                            <div className="pdf-inspection-header">
-                                <span className="title">
-                                    #{i + 1} - {finding.category || 'General'} / {finding.subCategory || '-'}
-                                </span>
-                                <span className={`badge ${finding.status === 'closed' ? 'closed' : 'open'}`}>
-                                    {finding.status === 'closed' ? 'CLOSED' : 'OPEN'}
-                                </span>
-                            </div>
-                            <div className="pdf-inspection-body">
-                                <div className="pdf-inspection-column">
-                                    <div className="column-header nc">Non-Compliance</div>
-                                    <div className="column-image">
-                                        {finding.nonCompliance?.image ? (
-                                            <img src={finding.nonCompliance.image} alt="NC" />
-                                        ) : (
-                                            <span style={{ color: '#999', fontSize: '9pt' }}>No Image</span>
-                                        )}
-                                    </div>
-                                    <div className="column-text">{finding.nonCompliance?.description || '-'}</div>
+                        <div key={i} className="pdf-inspection-card-v2">
+                            <div className="insp-header">
+                                <span className="insp-title">#{i + 1} — {finding.category || 'General'} / {finding.subCategory || '-'}</span>
+                                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                                    <span className={`pdf-badge ${finding.observationType === 'Safe Act' ? 'safe-act' : finding.observationType === 'Unsafe Act' ? 'unsafe-act' : 'unsafe-condition'}`}>
+                                        {finding.observationType || 'Observation'}
+                                    </span>
+                                    <span className={`pdf-badge risk-${(finding.riskLevel || 'low').toLowerCase()}`}>
+                                        {finding.riskLevel || 'N/A'} Risk
+                                    </span>
+                                    <span className={`pdf-badge ${finding.status === 'closed' ? 'closed' : 'open'}`}>
+                                        {finding.status === 'closed' ? 'CLOSED' : 'OPEN'}
+                                    </span>
                                 </div>
-                                <div className="pdf-inspection-column">
-                                    <div className="column-header ca">Corrective Action</div>
-                                    <div className="column-image">
-                                        {finding.correctiveAction?.image ? (
-                                            <img src={finding.correctiveAction.image} alt="CA" />
+                            </div>
+
+                            <div className="insp-meta-grid">
+                                <div className="insp-meta-item">
+                                    <div className="meta-label">Date</div>
+                                    <div className="meta-value">{finding.date || '-'}</div>
+                                </div>
+                                <div className="insp-meta-item">
+                                    <div className="meta-label">Time</div>
+                                    <div className="meta-value">{finding.time || '-'}</div>
+                                </div>
+                                <div className="insp-meta-item">
+                                    <div className="meta-label">Location</div>
+                                    <div className="meta-value">{finding.location || '-'}</div>
+                                </div>
+                                <div className="insp-meta-item">
+                                    <div className="meta-label">Observer</div>
+                                    <div className="meta-value">{finding.observerName || '-'}</div>
+                                </div>
+                                <div className="insp-meta-item">
+                                    <div className="meta-label">Activity</div>
+                                    <div className="meta-value">{finding.activityType || '-'}</div>
+                                </div>
+                            </div>
+
+                            <div className="insp-images">
+                                <div className="insp-img-col">
+                                    <div className="img-label nc-label">Non-Compliance / Observation</div>
+                                    <div className="insp-img-container">
+                                        {finding.nonCompliance?.image ? (
+                                            <img src={finding.nonCompliance.image} alt="Observation" />
                                         ) : (
-                                            <span style={{ color: '#999', fontSize: '9pt' }}>No Image</span>
+                                            <span style={{ color: '#94a3b8', fontSize: '9pt' }}>No Image</span>
                                         )}
                                     </div>
-                                    <div className="column-text">{finding.correctiveAction?.description || '-'}</div>
+                                    <div className="img-desc">{finding.nonCompliance?.description || '-'}</div>
+                                </div>
+                                <div className="insp-img-col">
+                                    <div className="img-label ca-label">Corrective Action</div>
+                                    <div className="insp-img-container">
+                                        {finding.correctiveAction?.image ? (
+                                            <img src={finding.correctiveAction.image} alt="Corrective" />
+                                        ) : (
+                                            <span style={{ color: '#94a3b8', fontSize: '9pt' }}>No Image</span>
+                                        )}
+                                    </div>
+                                    <div className="img-desc">{finding.correctiveAction?.description || '-'}</div>
+                                </div>
+                            </div>
+
+                            <div className="insp-footer">
+                                <div>
+                                    <div className="footer-label">Recommendation</div>
+                                    <div className="footer-value">{finding.recommendation || '-'}</div>
+                                </div>
+                                <div>
+                                    <div className="footer-label">Responsible Person</div>
+                                    <div className="footer-value">{finding.responsiblePerson || '-'}</div>
+                                </div>
+                                <div>
+                                    <div className="footer-label">Deadline</div>
+                                    <div className="footer-value">{finding.deadline || '-'}</div>
                                 </div>
                             </div>
                         </div>
@@ -1238,55 +1287,281 @@ const PrintLayout = ({ data, month }) => {
                 </div>
             )}
 
-            {/* ==================== PAGE 5: INCIDENTS ==================== */}
+            {/* ==================== PAGE 5: INCIDENTS - DETAILED REPORTS ==================== */}
             <div className="pdf-page-break">
-                <div className="pdf-page-header">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img src={COMPANY_LOGO} alt="Logo" className="company-logo" />
-                        <span className="company-name">{COMPANY_NAME}</span>
-                    </div>
-                    <span className="report-title">EHS Report - {month}</span>
-                </div>
-
-                <h2 className="pdf-section-header">Section 4: Incident Log</h2>
+                <h2 className="pdf-section-header">Section 4: Incidents & Learning</h2>
 
                 {(data?.incidents?.fireIncidents?.length > 0 || data?.incidents?.firstAidIncidents?.length > 0 || data?.incidents?.ffhIncidents?.length > 0) ? (
-                    <table className="pdf-table">
-                        <thead>
-                            <tr>
-                                <th style={{ width: '15%' }}>Date</th>
-                                <th style={{ width: '20%' }}>Type</th>
-                                <th style={{ width: '25%' }}>Location / Person</th>
-                                <th style={{ width: '40%' }}>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data?.incidents?.fireIncidents?.map((inc, i) => (
-                                <tr key={`fire-${i}`}>
-                                    <td>{inc.date || '-'}</td>
-                                    <td><strong style={{ color: '#dc2626' }}>Fire Incident</strong></td>
-                                    <td>{inc.location || '-'}</td>
-                                    <td>{inc.description || '-'}</td>
-                                </tr>
-                            ))}
-                            {data?.incidents?.firstAidIncidents?.map((inc, i) => (
-                                <tr key={`fa-${i}`}>
-                                    <td>{inc.dateOfInjury || '-'}</td>
-                                    <td><strong style={{ color: '#f59e0b' }}>First Aid - {inc.natureOfInjury}</strong></td>
-                                    <td>{inc.ipName || '-'}</td>
-                                    <td>{inc.description || '-'}</td>
-                                </tr>
-                            ))}
-                            {data?.incidents?.ffhIncidents?.map((inc, i) => (
-                                <tr key={`ffh-${i}`}>
-                                    <td>-</td>
-                                    <td><strong style={{ color: '#7c3aed' }}>Fall From Height</strong></td>
-                                    <td>{inc.location || '-'}</td>
-                                    <td>Height: {inc.exactHeight || '-'}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    <>
+                        {/* ---- FIRE INCIDENTS ---- */}
+                        {data?.incidents?.fireIncidents?.map((inc, i) => (
+                            <div key={`fire-${i}`} className="pdf-incident-report allow-break" style={{ marginBottom: '20px' }}>
+                                <div className="pdf-incident-banner fire">
+                                    <div>
+                                        <div className="inc-title">🔥 Fire Incident Report #{i + 1}</div>
+                                        <div style={{ fontSize: '8pt', color: '#ef4444', fontWeight: 700, marginTop: '2px' }}>
+                                            Severity: {inc.severity === 'major' ? 'Major (Fatality/High Loss)' : inc.severity === 'moderate' ? 'Moderate (Property Damage)' : 'Minor (Near Miss)'}
+                                        </div>
+                                    </div>
+                                    <div className="inc-meta">
+                                        <div>ID: #{inc.id?.replace('ID-', '') || '0000'}</div>
+                                        <div>{inc.date || '-'}</div>
+                                    </div>
+                                </div>
+                                <div className="pdf-incident-body">
+                                    <div className="inc-section-title">Incident Details</div>
+                                    <div className="pdf-incident-detail-grid">
+                                        <div className="detail-item"><div className="d-label">Date</div><div className="d-value">{inc.date || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Time</div><div className="d-value">{inc.time || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Location</div><div className="d-value">{inc.location || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Reported By</div><div className="d-value">{inc.reportedBy || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Severity</div><div className="d-value" style={{ color: inc.severity === 'major' ? '#dc2626' : inc.severity === 'moderate' ? '#d97706' : '#16a34a' }}>{inc.severity === 'major' ? 'Major' : inc.severity === 'moderate' ? 'Moderate' : 'Minor'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Type of Fire</div><div className="d-value">{inc.classification === 'electrical' ? 'Electrical' : inc.classification === 'chemical' ? 'Chemical' : inc.classification === 'solid' ? 'Solid Material' : inc.classification === 'oil_gas' ? 'Oil/Gas' : '-'}</div></div>
+                                    </div>
+
+                                    {inc.narrative && (<>
+                                        <div className="inc-section-title">Description / Narrative</div>
+                                        <div className="pdf-incident-narrative">{inc.narrative}</div>
+                                    </>)}
+
+                                    {(inc.spottedBy || inc.incidentTime) && (<>
+                                        <div className="inc-section-title">Immediate Action Taken</div>
+                                        <div className="pdf-incident-narrative">
+                                            {inc.spottedBy && inc.incidentTime && <>The fire was first spotted by <strong>{inc.spottedBy}</strong> at <strong>{inc.incidentTime}</strong>. </>}
+                                            {inc.alertMethod && <>Alert raised via <strong>{inc.alertMethod}</strong>. </>}
+                                            {inc.sourceIsolated && inc.isolationMethod && <>The <strong>{inc.sourceIsolated}</strong> was <strong>{inc.isolationMethod}</strong>. </>}
+                                            {inc.workerAction && <>All personnel <strong>{inc.workerAction}</strong>. </>}
+                                            {inc.extinguishingAgent && inc.responder && inc.fireOutTime && <>Fire extinguished using <strong>{inc.extinguishingAgent}</strong> by <strong>{inc.responder}</strong> at <strong>{inc.fireOutTime}</strong>.</>}
+                                        </div>
+                                    </>)}
+
+                                    <div className="inc-section-title">Damage Assessment</div>
+                                    <div className="pdf-incident-detail-grid">
+                                        <div className="detail-item"><div className="d-label">Human Injury</div><div className="d-value">{inc.humanInjury || 'None'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Property Damage</div><div className="d-value">{inc.propertyDamage || 'None'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Environmental Impact</div><div className="d-value">{inc.environmentalImpact || 'None'}</div></div>
+                                    </div>
+
+                                    {(inc.whyAnalysis?.length > 0 || inc.directCause || inc.rootCause) && (
+                                        <div className="pdf-keep-together">
+                                            <div className="inc-section-title">Root Cause Analysis (5-Why)</div>
+                                            {inc.whyAnalysis?.map((why, idx) => (
+                                                <div key={idx} style={{ marginBottom: '4px', fontSize: '9pt' }}>
+                                                    <strong style={{ color: '#475569' }}>{idx + 1}. {why.question}</strong>
+                                                    <div style={{ paddingLeft: '12px', color: '#64748b', borderLeft: '2px solid #fde68a', marginLeft: '4px', marginTop: '2px' }}>Ans: {why.answer || 'Pending'}</div>
+                                                </div>
+                                            ))}
+                                            <div className="pdf-incident-detail-grid" style={{ marginTop: '8px' }}>
+                                                <div className="detail-item"><div className="d-label" style={{ color: '#dc2626' }}>Direct Cause</div><div className="d-value">{inc.directCause || 'Pending'}</div></div>
+                                                <div className="detail-item"><div className="d-label" style={{ color: '#dc2626' }}>Root Cause</div><div className="d-value">{inc.rootCause || 'Pending'}</div></div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {inc.correctiveActions?.length > 0 && (
+                                        <div className="pdf-keep-together">
+                                            <div className="inc-section-title">Corrective & Preventive Actions (CAPA)</div>
+                                            <table className="pdf-capa-table">
+                                                <thead><tr><th>Action Item</th><th>Responsibility</th><th>Target Date</th><th>Status</th></tr></thead>
+                                                <tbody>
+                                                    {inc.correctiveActions.map((capa, idx) => (
+                                                        <tr key={idx}>
+                                                            <td>{capa.action || '-'}</td>
+                                                            <td>{capa.owner || '-'}</td>
+                                                            <td>{capa.dueDate || '-'}</td>
+                                                            <td><span className={`pdf-badge ${capa.status === 'CLOSED' ? 'closed' : 'open'}`}>{capa.status || 'OPEN'}</span></td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    )}
+
+                                    {inc.attachments?.length > 0 && (<>
+                                        <div className="inc-section-title">Evidence & Attachments</div>
+                                        <div className="pdf-evidence-grid">
+                                            {inc.attachments.map((file, idx) => (
+                                                <div key={idx} className="pdf-evidence-item">
+                                                    <div className="evidence-img"><img src={file.url} alt={`Evidence ${idx + 1}`} /></div>
+                                                    <div className="evidence-caption">{file.caption || `Attachment #${idx + 1}`}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </>)}
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* ---- FIRST AID / INJURY INCIDENTS ---- */}
+                        {data?.incidents?.firstAidIncidents?.map((inc, i) => (
+                            <div key={`fa-${i}`} className="pdf-incident-report allow-break" style={{ marginBottom: '20px' }}>
+                                <div className="pdf-incident-banner firstaid">
+                                    <div>
+                                        <div className="inc-title">🩹 Injury / First Aid Report #{i + 1}</div>
+                                        <div style={{ fontSize: '8pt', color: '#f43f5e', fontWeight: 700, marginTop: '2px' }}>Medical Confidential</div>
+                                    </div>
+                                    <div className="inc-meta">
+                                        <div>Ref: {inc.id || '-'}</div>
+                                        <div>{inc.dateOfInjury || '-'}</div>
+                                    </div>
+                                </div>
+                                <div className="pdf-incident-body">
+                                    <div className="inc-section-title">A — Injured Person Details</div>
+                                    <div className="pdf-incident-detail-grid">
+                                        <div className="detail-item"><div className="d-label">Name</div><div className="d-value">{inc.ipName || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Employee ID</div><div className="d-value">{inc.employeeId || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Designation</div><div className="d-value">{inc.designation || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Dept / Contractor</div><div className="d-value">{inc.department || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Supervisor</div><div className="d-value">{inc.supervisor || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Date / Time</div><div className="d-value">{inc.dateOfInjury || '-'} {inc.timeOfInjury || ''}</div></div>
+                                    </div>
+
+                                    <div className="inc-section-title">C — Injury Assessment</div>
+                                    <div className="pdf-incident-detail-grid">
+                                        <div className="detail-item"><div className="d-label">Nature of Injury</div><div className="d-value" style={{ color: '#e11d48', fontWeight: 700 }}>{inc.natureOfInjury || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Body Parts</div><div className="d-value">{inc.bodyPart?.join(', ') || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Location</div><div className="d-value">{inc.location || '-'}</div></div>
+                                    </div>
+                                    <div className="pdf-incident-detail-grid">
+                                        <div className="detail-item"><div className="d-label">Depth</div><div className="d-value">{inc.severityDepth || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Bleeding</div><div className="d-value">{inc.severityBleeding || '-'}</div></div>
+                                    </div>
+
+                                    {inc.description && (<>
+                                        <div className="inc-section-title">D — Description</div>
+                                        <div className="pdf-incident-narrative">"{inc.description}"</div>
+                                    </>)}
+
+                                    <div className="inc-section-title">E — PPE Verification</div>
+                                    <div className="pdf-check-grid">
+                                        <div className="pdf-check-item"><span className="check-label">Hand Gloves</span><span className={`check-value ${inc.glovesWorn === 'Yes' ? 'yes' : 'no'}`}>{inc.glovesWorn || '-'}</span></div>
+                                        <div className="pdf-check-item"><span className="check-label">Glove Type</span><span className="check-value">{inc.gloveType || '-'}</span></div>
+                                        <div className="pdf-check-item"><span className="check-label">PPE Appropriate</span><span className={`check-value ${inc.ppeAppropriate === 'Yes' ? 'yes' : 'no'}`}>{inc.ppeAppropriate || '-'}</span></div>
+                                    </div>
+
+                                    <div className="inc-section-title">F — Treatment</div>
+                                    <div className="pdf-incident-detail-grid">
+                                        <div className="detail-item"><div className="d-label">Administered By</div><div className="d-value">{inc.administeredBy || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">ATV Given</div><div className="d-value">{inc.atvGiven || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Hospital Referral</div><div className="d-value">{inc.hospitalReferral || 'No'}{inc.hospitalReferral === 'Yes' && inc.hospitalName ? ` — ${inc.hospitalName}` : ''}</div></div>
+                                    </div>
+                                    {inc.treatmentSteps?.length > 0 && (
+                                        <div style={{ marginTop: '6px', fontSize: '8pt', color: '#475569' }}>
+                                            <strong>Procedures:</strong> {inc.treatmentSteps.join(' • ')}
+                                        </div>
+                                    )}
+
+                                    {inc.attachments?.length > 0 && (<>
+                                        <div className="inc-section-title">G — Medical Evidence</div>
+                                        <div className="pdf-evidence-grid">
+                                            {inc.attachments.map((file, idx) => (
+                                                <div key={idx} className="pdf-evidence-item">
+                                                    <div className="evidence-img"><img src={file.url} alt={`Evidence ${idx + 1}`} /></div>
+                                                    <div className="evidence-caption">{file.caption || `Record #${idx + 1}`}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </>)}
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* ---- FALL FROM HEIGHT INCIDENTS ---- */}
+                        {data?.incidents?.ffhIncidents?.map((inc, i) => (
+                            <div key={`ffh-${i}`} className="pdf-incident-report allow-break" style={{ marginBottom: '20px' }}>
+                                <div className="pdf-incident-banner ffh">
+                                    <div>
+                                        <div className="inc-title">⚠️ Fall From Height Report #{i + 1}</div>
+                                        <div style={{ fontSize: '8pt', color: '#f97316', fontWeight: 700, marginTop: '2px' }}>Critical High Risk Incident</div>
+                                    </div>
+                                    <div className="inc-meta"><div>ID: #{inc.id || '-'}</div></div>
+                                </div>
+                                <div className="pdf-incident-body">
+                                    <div className="inc-section-title">A — General Information</div>
+                                    <div className="pdf-incident-detail-grid">
+                                        <div className="detail-item"><div className="d-label">Date & Time</div><div className="d-value">{inc.dateTime || inc.date || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Location</div><div className="d-value">{inc.location || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Weather</div><div className="d-value">{inc.weatherCondition || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Exact Height</div><div className="d-value" style={{ color: '#ea580c', fontWeight: 700 }}>{inc.exactHeight || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Surface Landed</div><div className="d-value">{inc.surfaceLanded || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Working Platform</div><div className="d-value">{inc.workingPlatform || '-'}</div></div>
+                                    </div>
+
+                                    {inc.fallProtectionUsed && (<>
+                                        <div className="inc-section-title">B — Fall Protection</div>
+                                        <div className="pdf-check-grid">
+                                            <div className="pdf-check-item"><span className="check-label">Harness Worn</span><span className={`check-value ${inc.fallProtectionUsed.harnessWorn === 'Yes' ? 'yes' : 'no'}`}>{inc.fallProtectionUsed.harnessWorn || '-'}</span></div>
+                                            <div className="pdf-check-item"><span className="check-label">Double Lanyard</span><span className={`check-value ${inc.fallProtectionUsed.doubleLanyard === 'Yes' ? 'yes' : 'no'}`}>{inc.fallProtectionUsed.doubleLanyard || '-'}</span></div>
+                                            <div className="pdf-check-item"><span className="check-label">Hooked/Anchored</span><span className={`check-value ${inc.fallProtectionUsed.hookedAnchored === 'Yes' ? 'yes' : 'no'}`}>{inc.fallProtectionUsed.hookedAnchored || '-'}</span></div>
+                                        </div>
+                                    </>)}
+
+                                    <div className="inc-section-title">C — Injury Assessment</div>
+                                    <div className="pdf-incident-detail-grid">
+                                        <div className="detail-item"><div className="d-label">Consciousness</div><div className="d-value">{inc.consciousnessLevel || '-'}</div></div>
+                                        <div className="detail-item"><div className="d-label">Visible Injuries</div><div className="d-value">{inc.visibleInjuries?.join(', ') || 'None recorded'}</div></div>
+                                    </div>
+
+                                    {inc.description && (<>
+                                        <div className="inc-section-title">D — Incident Description</div>
+                                        <div className="pdf-incident-narrative">"{inc.description}"</div>
+                                    </>)}
+
+                                    {(inc.immediateCauses?.length > 0 || inc.rootCauses?.length > 0) && (<>
+                                        <div className="inc-section-title">E — Root Cause Analysis</div>
+                                        {inc.immediateCauses?.length > 0 && (
+                                            <div style={{ marginBottom: '6px' }}>
+                                                <div style={{ fontSize: '7pt', fontWeight: 700, color: '#dc2626', textTransform: 'uppercase', marginBottom: '3px' }}>Immediate Causes</div>
+                                                {inc.immediateCauses.map((c, idx) => <div key={idx} style={{ fontSize: '9pt', color: '#475569', paddingLeft: '8px' }}>• {c}</div>)}
+                                            </div>
+                                        )}
+                                        {inc.rootCauses?.length > 0 && (
+                                            <div>
+                                                <div style={{ fontSize: '7pt', fontWeight: 700, color: '#ea580c', textTransform: 'uppercase', marginBottom: '3px' }}>Root Causes</div>
+                                                {inc.rootCauses.map((c, idx) => <div key={idx} style={{ fontSize: '9pt', color: '#475569', paddingLeft: '8px' }}>• {c}</div>)}
+                                            </div>
+                                        )}
+                                    </>)}
+
+                                    {(inc.movedBy || inc.firstAidGiven?.length > 0) && (<>
+                                        <div className="inc-section-title">F — Rescue & Medical</div>
+                                        <div className="pdf-incident-detail-grid">
+                                            <div className="detail-item"><div className="d-label">How Victim Was Moved</div><div className="d-value">{inc.movedBy || '-'}</div></div>
+                                            <div className="detail-item"><div className="d-label">First Aid Given</div><div className="d-value">{inc.firstAidGiven?.join(', ') || 'None'}</div></div>
+                                        </div>
+                                    </>)}
+
+                                    {inc.actions?.length > 0 && (<>
+                                        <div className="inc-section-title">G — Corrective Action Plan</div>
+                                        <table className="pdf-capa-table">
+                                            <thead><tr><th>Action Item</th><th>Responsibility</th><th>Deadline</th></tr></thead>
+                                            <tbody>
+                                                {inc.actions.map((action, idx) => (
+                                                    <tr key={idx}>
+                                                        <td>{action.item || '-'}</td>
+                                                        <td>{action.responsibility || '-'}</td>
+                                                        <td>{action.deadline || '-'}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </>)}
+
+                                    {inc.attachments?.length > 0 && (<>
+                                        <div className="inc-section-title">H — Evidence & Site Photos</div>
+                                        <div className="pdf-evidence-grid cols-3">
+                                            {inc.attachments.map((file, idx) => (
+                                                <div key={idx} className="pdf-evidence-item">
+                                                    <div className="evidence-img"><img src={file.url} alt={`Evidence ${idx + 1}`} /></div>
+                                                    <div className="evidence-caption">{file.caption || 'No caption'}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </>)}
+                                </div>
+                            </div>
+                        ))}
+                    </>
                 ) : (
                     <div style={{ padding: '20px', textAlign: 'center', border: '1px solid #ddd', borderRadius: '4px', color: '#666' }}>
                         ✓ No incidents recorded for this reporting period.
@@ -1296,20 +1571,31 @@ const PrintLayout = ({ data, month }) => {
 
             {/* ==================== PAGE 6: PROGRAMS & ACTIVITIES ==================== */}
             <div className="pdf-page-break">
-                <div className="pdf-page-header">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img src={COMPANY_LOGO} alt="Logo" className="company-logo" />
-                        <span className="company-name">{COMPANY_NAME}</span>
+                <h2 className="pdf-section-header">Section 5: Health & Safety Programs & Activities</h2>
+
+                {/* Training Summary */}
+                <div className="pdf-keep-together">
+                    <h3 className="pdf-subsection-header">5.1 Training & Development</h3>
+                    <div className="pdf-info-grid" style={{ marginBottom: '12px' }}>
+                        <div className="pdf-info-box">
+                            <div className="label">Induction Conducted</div>
+                            <div className="value">{data?.programs?.training?.inductionConducted ? '✓ Yes' : '✗ No'}</div>
+                        </div>
+                        <div className="pdf-info-box">
+                            <div className="label">Induction Participants</div>
+                            <div className="value">{data?.programs?.training?.inductionParticipants || 0}</div>
+                        </div>
+                        <div className="pdf-info-box">
+                            <div className="label">Total Training Man-Hours</div>
+                            <div className="value" style={{ fontWeight: 'bold', color: '#1e3a5f' }}>{data?.programs?.training?.totalManHours || '-'}</div>
+                        </div>
                     </div>
-                    <span className="report-title">EHS Report - {month}</span>
                 </div>
 
-                <h2 className="pdf-section-header">Section 5: EHS Programs & Activities</h2>
-
-                {/* Training Details */}
+                {/* Toolbox Talks */}
                 {data?.programs?.training?.toolboxTalks?.length > 0 && (
                     <div className="pdf-keep-together">
-                        <h3 className="pdf-subsection-header">Toolbox Talks (TBT)</h3>
+                        <h4 style={{ fontSize: '10pt', fontWeight: 700, color: '#475569', marginBottom: '6px' }}>Toolbox Talks (TBT)</h4>
                         <table className="pdf-table">
                             <thead>
                                 <tr>
@@ -1331,66 +1617,133 @@ const PrintLayout = ({ data, month }) => {
                     </div>
                 )}
 
-                {/* Emergency Preparedness */}
-                {data?.programs?.emergencyPreparedness?.mockDrillConducted && (
-                    <div className="pdf-keep-together">
-                        <h3 className="pdf-subsection-header">Emergency Preparedness</h3>
-                        <div className="pdf-info-grid">
-                            <div className="pdf-info-box">
-                                <div className="label">Mock Drill Type</div>
-                                <div className="value">{data.programs.emergencyPreparedness.mockDrillDetails?.type || '-'}</div>
-                            </div>
-                            <div className="pdf-info-box">
-                                <div className="label">Date</div>
-                                <div className="value">{data.programs.emergencyPreparedness.mockDrillDetails?.date || '-'}</div>
-                            </div>
-                            <div className="pdf-info-box">
-                                <div className="label">Participants</div>
-                                <div className="value">{data.programs.emergencyPreparedness.mockDrillDetails?.participants || 0}</div>
-                            </div>
-                            <div className="pdf-info-box">
-                                <div className="label">Fire Equipment Inspection</div>
-                                <div className="value">{data.programs.emergencyPreparedness.fireEquipmentInspection ? '✓ Completed' : '-'}</div>
-                            </div>
+                {/* Specific Trainings */}
+                {data?.programs?.training?.specificTrainings?.length > 0 && (
+                    <div className="pdf-keep-together" style={{ marginTop: '12px' }}>
+                        <h4 style={{ fontSize: '10pt', fontWeight: 700, color: '#475569', marginBottom: '6px' }}>Specific Trainings</h4>
+                        <table className="pdf-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Topic</th>
+                                    <th>Type</th>
+                                    <th style={{ textAlign: 'center' }}>Participants</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.programs.training.specificTrainings.map((st, i) => (
+                                    <tr key={i}>
+                                        <td>{st.date || '-'}</td>
+                                        <td>{st.topic || '-'}</td>
+                                        <td>{st.type || '-'}</td>
+                                        <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{st.participants || 0}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+
+                {/* Training Evidence Photos */}
+                {data?.programs?.training?.evidence?.length > 0 && (
+                    <div style={{ marginTop: '12px' }}>
+                        <h4 style={{ fontSize: '9pt', fontWeight: 700, color: '#64748b', marginBottom: '6px', textTransform: 'uppercase' }}>Training Evidence</h4>
+                        <div className="pdf-evidence-grid">
+                            {data.programs.training.evidence.map((ev, idx) => (
+                                <div key={idx} className="pdf-evidence-item">
+                                    <div className="evidence-img"><img src={ev.imageUrl} alt={`Training ${idx + 1}`} /></div>
+                                    <div className="evidence-caption">{ev.caption || `Training Photo #${idx + 1}`}</div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 )}
 
-                {/* Campaigns */}
-                {(data?.programs?.campaigns?.safetyCommitteeMeeting?.held || data?.programs?.campaigns?.specialDays?.length > 0) && (
-                    <div className="pdf-keep-together">
-                        <h3 className="pdf-subsection-header">Campaigns & Motivation</h3>
-                        <ul className="pdf-list">
-                            {data?.programs?.campaigns?.safetyCommitteeMeeting?.held && (
-                                <li>Safety Committee Meeting: {data.programs.campaigns.safetyCommitteeMeeting.date || '-'}</li>
-                            )}
-                            {data?.programs?.campaigns?.healthHygiene?.conducted && (
-                                <li>Health & Hygiene Activity: {data.programs.campaigns.healthHygiene.details || 'Conducted'}</li>
-                            )}
-                            {data?.programs?.campaigns?.rewardsRecognition?.given && (
-                                <li>Rewards & Recognition: {data.programs.campaigns.rewardsRecognition.details || 'Given'}</li>
-                            )}
-                            {data?.programs?.campaigns?.specialDays?.map((day, i) => (
-                                <li key={i}>Special Day: {day.name} ({day.date})</li>
+                {/* Emergency Preparedness */}
+                <div className="pdf-keep-together" style={{ marginTop: '20px' }}>
+                    <h3 className="pdf-subsection-header">5.2 Emergency Preparedness</h3>
+                    <div className="pdf-info-grid">
+                        <div className="pdf-info-box">
+                            <div className="label">Mock Drill Conducted</div>
+                            <div className="value">{data?.programs?.emergencyPreparedness?.mockDrillConducted ? '✓ Yes' : '✗ No'}</div>
+                        </div>
+                        <div className="pdf-info-box">
+                            <div className="label">Mock Drill Type</div>
+                            <div className="value">{data?.programs?.emergencyPreparedness?.mockDrillDetails?.type || '-'}</div>
+                        </div>
+                        <div className="pdf-info-box">
+                            <div className="label">Date</div>
+                            <div className="value">{data?.programs?.emergencyPreparedness?.mockDrillDetails?.date || '-'}</div>
+                        </div>
+                        <div className="pdf-info-box">
+                            <div className="label">Participants</div>
+                            <div className="value">{data?.programs?.emergencyPreparedness?.mockDrillDetails?.participants || 0}</div>
+                        </div>
+                        <div className="pdf-info-box">
+                            <div className="label">Fire Equipment Inspection</div>
+                            <div className="value">{data?.programs?.emergencyPreparedness?.fireEquipmentInspection ? '✓ Completed' : '-'}</div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Emergency Preparedness Evidence */}
+                {data?.programs?.emergencyPreparedness?.evidence?.length > 0 && (
+                    <div style={{ marginTop: '12px' }}>
+                        <h4 style={{ fontSize: '9pt', fontWeight: 700, color: '#64748b', marginBottom: '6px', textTransform: 'uppercase' }}>Emergency Drill Evidence</h4>
+                        <div className="pdf-evidence-grid">
+                            {data.programs.emergencyPreparedness.evidence.map((ev, idx) => (
+                                <div key={idx} className="pdf-evidence-item">
+                                    <div className="evidence-img"><img src={ev.imageUrl} alt={`Drill ${idx + 1}`} /></div>
+                                    <div className="evidence-caption">{ev.caption || `Drill Photo #${idx + 1}`}</div>
+                                </div>
                             ))}
-                        </ul>
+                        </div>
+                    </div>
+                )}
+
+                {/* Campaigns & Motivation */}
+                <div className="pdf-keep-together" style={{ marginTop: '20px' }}>
+                    <h3 className="pdf-subsection-header">5.3 Campaigns & Motivation</h3>
+                    <ul className="pdf-list">
+                        {data?.programs?.campaigns?.safetyCommitteeMeeting?.held && (
+                            <li>Safety Committee Meeting: {data.programs.campaigns.safetyCommitteeMeeting.date || '-'}</li>
+                        )}
+                        {data?.programs?.campaigns?.healthHygiene?.conducted && (
+                            <li>Health & Hygiene Activity: {data.programs.campaigns.healthHygiene.details || 'Conducted'}</li>
+                        )}
+                        {data?.programs?.campaigns?.rewardsRecognition?.given && (
+                            <li>Rewards & Recognition: {data.programs.campaigns.rewardsRecognition.details || 'Given'}</li>
+                        )}
+                        {data?.programs?.campaigns?.specialDays?.map((day, i) => (
+                            <li key={i}>Special Day: {day.name} ({day.date})</li>
+                        ))}
+                        {!data?.programs?.campaigns?.safetyCommitteeMeeting?.held && !data?.programs?.campaigns?.healthHygiene?.conducted && !data?.programs?.campaigns?.rewardsRecognition?.given && !data?.programs?.campaigns?.specialDays?.length && (
+                            <li style={{ color: '#94a3b8', fontStyle: 'italic' }}>No campaigns recorded this period.</li>
+                        )}
+                    </ul>
+                </div>
+
+                {/* Campaign Evidence */}
+                {data?.programs?.campaigns?.evidence?.length > 0 && (
+                    <div style={{ marginTop: '12px' }}>
+                        <h4 style={{ fontSize: '9pt', fontWeight: 700, color: '#64748b', marginBottom: '6px', textTransform: 'uppercase' }}>Campaign Evidence</h4>
+                        <div className="pdf-evidence-grid">
+                            {data.programs.campaigns.evidence.map((ev, idx) => (
+                                <div key={idx} className="pdf-evidence-item">
+                                    <div className="evidence-img"><img src={ev.imageUrl} alt={`Campaign ${idx + 1}`} /></div>
+                                    <div className="evidence-caption">{ev.caption || `Campaign Photo #${idx + 1}`}</div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>
 
-            {/* ==================== PAGE 7: CHALLENGES & IMPROVEMENT ==================== */}
+            {/* ==================== PAGE 7: HIGH RISK WORK CONTROLS ==================== */}
             <div className="pdf-page-break">
-                <div className="pdf-page-header">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img src={COMPANY_LOGO} alt="Logo" className="company-logo" />
-                        <span className="company-name">{COMPANY_NAME}</span>
-                    </div>
-                    <span className="report-title">EHS Report - {month}</span>
-                </div>
+                <h2 className="pdf-section-header">Section 6: High Risk Work Controls</h2>
 
-                <h2 className="pdf-section-header">Section 6: Challenges & Improvement Plan</h2>
-
-                {/* Permits */}
+                {/* Permit to Work */}
                 {data?.highRiskWork?.permits?.length > 0 && (
                     <div className="pdf-keep-together">
                         <h3 className="pdf-subsection-header">Permit to Work Summary</h3>
@@ -1419,45 +1772,75 @@ const PrintLayout = ({ data, month }) => {
                     </div>
                 )}
 
-                {/* Environmental Performance */}
-                <h3 className="pdf-subsection-header">Environmental Performance</h3>
-                <div className="pdf-info-grid">
-                    <div className="pdf-info-box">
-                        <div className="label">Hazardous Waste</div>
-                        <div className="value">{data?.environment?.waste?.hazardous || '-'}</div>
+                {/* Safety Controls  */}
+                {data?.highRiskWork?.safetyControls?.length > 0 && (
+                    <div className="pdf-keep-together" style={{ marginTop: '16px' }}>
+                        <h3 className="pdf-subsection-header">Safety Controls & Measures</h3>
+                        <ul className="pdf-list">
+                            {data.highRiskWork.safetyControls.map((ctrl, i) => (
+                                <li key={i}>{ctrl}</li>
+                            ))}
+                        </ul>
                     </div>
-                    <div className="pdf-info-box">
-                        <div className="label">Non-Hazardous Waste</div>
-                        <div className="value">{data?.environment?.waste?.nonHazardous || '-'}</div>
+                )}
+
+                {!data?.highRiskWork?.permits?.length && !data?.highRiskWork?.safetyControls?.length && (
+                    <div style={{ padding: '20px', textAlign: 'center', border: '1px solid #ddd', borderRadius: '4px', color: '#666' }}>
+                        No high-risk work activities reported this period.
                     </div>
-                    <div className="pdf-info-box">
-                        <div className="label">Water Consumption</div>
-                        <div className="value">{data?.environment?.consumption?.water || '-'}</div>
-                    </div>
-                    <div className="pdf-info-box">
-                        <div className="label">Fuel Consumption</div>
-                        <div className="value">{data?.environment?.consumption?.fuel || '-'}</div>
+                )}
+            </div>
+
+            {/* ==================== PAGE 8: ENVIRONMENTAL PERFORMANCE ==================== */}
+            <div className="pdf-page-break">
+                <h2 className="pdf-section-header">Section 7: Environmental Performance</h2>
+
+                <div className="pdf-keep-together">
+                    <h3 className="pdf-subsection-header">Waste Management</h3>
+                    <div className="pdf-info-grid">
+                        <div className="pdf-info-box">
+                            <div className="label">Hazardous Waste</div>
+                            <div className="value">{data?.environment?.waste?.hazardous || '-'}</div>
+                        </div>
+                        <div className="pdf-info-box">
+                            <div className="label">Non-Hazardous Waste</div>
+                            <div className="value">{data?.environment?.waste?.nonHazardous || '-'}</div>
+                        </div>
                     </div>
                 </div>
-                <div className="pdf-info-box" style={{ marginTop: '10px', textAlign: 'center' }}>
-                    <div className="label">Spills Reported</div>
-                    <div className="value" style={{ fontSize: '24pt', color: data?.environment?.spills > 0 ? '#dc2626' : '#16a34a' }}>
-                        {data?.environment?.spills || 0}
+
+                <div className="pdf-keep-together" style={{ marginTop: '16px' }}>
+                    <h3 className="pdf-subsection-header">Resource Consumption</h3>
+                    <div className="pdf-info-grid">
+                        <div className="pdf-info-box">
+                            <div className="label">Water Consumption</div>
+                            <div className="value">{data?.environment?.consumption?.water || '-'}</div>
+                        </div>
+                        <div className="pdf-info-box">
+                            <div className="label">Fuel Consumption</div>
+                            <div className="value">{data?.environment?.consumption?.fuel || '-'}</div>
+                        </div>
+                        <div className="pdf-info-box">
+                            <div className="label">Electricity Usage</div>
+                            <div className="value">{data?.environment?.consumption?.electricity || '-'}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="pdf-keep-together" style={{ marginTop: '16px' }}>
+                    <h3 className="pdf-subsection-header">Environmental Incidents</h3>
+                    <div className="pdf-info-box" style={{ textAlign: 'center', padding: '16px' }}>
+                        <div className="label">Spills Reported</div>
+                        <div className="value" style={{ fontSize: '28pt', color: data?.environment?.spills > 0 ? '#dc2626' : '#16a34a', fontWeight: 'bold' }}>
+                            {data?.environment?.spills || 0}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* ==================== CHALLENGES & IMPROVEMENT PLAN ==================== */}
+            {/* ==================== PAGE 9: CHALLENGES & IMPROVEMENT PLAN ==================== */}
             <div className="pdf-page-break">
-                <div className="pdf-page-header">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img src={COMPANY_LOGO} alt="Logo" className="company-logo" />
-                        <span className="company-name">{COMPANY_NAME}</span>
-                    </div>
-                    <span className="report-title">EHS Report - {month}</span>
-                </div>
-
-                <h2 className="pdf-section-header">Section 6: Challenges & Improvement Plan</h2>
+                <h2 className="pdf-section-header">Section 8: Challenges & Improvement Plan</h2>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
                     {/* Challenges */}

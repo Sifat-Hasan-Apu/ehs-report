@@ -68,12 +68,20 @@ const PublicView = () => {
         // Ensure print layout is active during PDF capture
         document.body.classList.add('pdf-generating');
 
+        // Margins: [top, left, bottom, right] in mm
+        // Top: 10mm for breathing room, Bottom: 18mm to reserve space for footer
+        // Top: 22mm to reserve space for the global repeated header
+        const PDF_MARGIN_TOP = 22;
+        const PDF_MARGIN_LEFT = 15;
+        const PDF_MARGIN_BOTTOM = 18;
+        const PDF_MARGIN_RIGHT = 15;
+
         const opt = {
-            margin: 0,
+            margin: [PDF_MARGIN_TOP, PDF_MARGIN_LEFT, PDF_MARGIN_BOTTOM, PDF_MARGIN_RIGHT],
             filename: `EHS_Report_${selectedMonthLabel.replace(/\s+/g, '_')}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
+            image: { type: 'png', quality: 1.0 },
             html2canvas: {
-                scale: 2,
+                scale: 2.5,
                 useCORS: true,
                 logging: false,
                 letterRendering: true,
@@ -83,10 +91,38 @@ const PublicView = () => {
             },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak: {
-                mode: ['css'],
-                before: '.pdf-page-break'
+                mode: ['css', 'legacy'],
+                before: '.pdf-page-break',
+                avoid: [
+                    '.pdf-inspection-card-v2',
+                    '.pdf-evidence-item',
+                    '.pdf-keep-together',
+                    '.pdf-info-grid',
+                    '.pdf-info-box',
+                    '.pdf-capa-table',
+                    '.pdf-incident-detail-grid',
+                    '.pdf-incident-narrative',
+                    '.pdf-check-grid',
+                    '.pdf-signature-section',
+                    'table.pdf-table',
+                    '.pdf-incident-body > div'
+                ]
             }
         };
+
+        const logoUrl = "/ucpl_logo_v2.png";
+        let logoBase64 = null;
+        try {
+            const response = await fetch(logoUrl);
+            const blob = await response.blob();
+            logoBase64 = await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.readAsDataURL(blob);
+            });
+        } catch (e) {
+            console.error("Logo load error", e);
+        }
 
         try {
             const pdf = await html2pdf().set(opt).from(element).toPdf().get('pdf');
@@ -95,22 +131,65 @@ const PublicView = () => {
             const pageWidth = pdf.internal.pageSize.getWidth();
             const pageHeight = pdf.internal.pageSize.getHeight();
 
+            // Footer Y position: sits inside the bottom margin area, below content
+            const footerY = pageHeight - 7;
+
+            // Header Y position constants (mm)
+            const HEADER_LINE_Y = 19;
+            const HEADER_TEXT_Y = 13.5;
+            const LOGO_Y = 7;
+            const LOGO_SIZE = 10;
+
+            const COMPANY_NAME = reportData?.basicInfo?.companyName || "United Chattogram Power Limited";
+
             for (let i = 1; i <= totalPages; i++) {
                 pdf.setPage(i);
 
-                // Add page number footer
-                pdf.setFontSize(8);
+                // --- GLOBAL HEADER (Every page except Cover) ---
+                if (i > 1) {
+                    // Logo
+                    if (logoBase64) {
+                        pdf.addImage(logoBase64, 'PNG', PDF_MARGIN_LEFT, LOGO_Y, LOGO_SIZE, LOGO_SIZE);
+                    }
+
+                    // Company Name
+                    pdf.setFontSize(10.5);
+                    pdf.setFont("helvetica", "bold");
+                    pdf.setTextColor(30, 58, 95); // #1e3a5f
+                    pdf.text(COMPANY_NAME, PDF_MARGIN_LEFT + LOGO_SIZE + 3, HEADER_TEXT_Y);
+
+                    // Report Title (Right)
+                    pdf.setFontSize(9);
+                    pdf.setFont("helvetica", "normal");
+                    pdf.setTextColor(100, 100, 100);
+                    pdf.text(`EHS Report - ${selectedMonthLabel}`, pageWidth - PDF_MARGIN_RIGHT, HEADER_TEXT_Y, { align: 'right' });
+
+                    // Header Separator Line
+                    pdf.setDrawColor(30, 58, 95);
+                    pdf.setLineWidth(0.4);
+                    pdf.line(PDF_MARGIN_LEFT, HEADER_LINE_Y, pageWidth - PDF_MARGIN_RIGHT, HEADER_LINE_Y);
+                }
+
+                // --- GLOBAL FOOTER ---
+                // Draw a thin separator line above footer
+                pdf.setDrawColor(200, 200, 200);
+                pdf.setLineWidth(0.3);
+                pdf.line(PDF_MARGIN_LEFT, footerY - 4, pageWidth - PDF_MARGIN_RIGHT, footerY - 4);
+
+                // Add page number footer (center)
+                pdf.setFontSize(7.5);
                 pdf.setTextColor(100, 100, 100);
-                const footerText = `Page ${i} of ${totalPages}`;
-                pdf.text(footerText, pageWidth / 2, pageHeight - 10, { align: 'center' });
+                pdf.text(`Page ${i} of ${totalPages}`, pageWidth / 2, footerY, { align: 'center' });
 
                 // Add Confidential Text (Left)
-                pdf.setTextColor(200, 0, 0); // Red color for Confidential
-                pdf.text("CONFIDENTIAL - For Internal Use Only", 20, pageHeight - 10, { align: 'left' });
+                pdf.setTextColor(200, 0, 0);
+                pdf.setFontSize(7);
+                pdf.text("CONFIDENTIAL - For Internal Use Only", PDF_MARGIN_LEFT, footerY, { align: 'left' });
 
                 // Add Developer Credit (Right)
-                pdf.setTextColor(100, 100, 100); // Gray color
-                pdf.text("Developed by Sifat Hasan Apu", pageWidth - 20, pageHeight - 10, { align: 'right' });
+                pdf.setTextColor(130, 130, 130);
+                pdf.setFontSize(7);
+                pdf.text("Developed by Sifat Hasan Apu", pageWidth - PDF_MARGIN_RIGHT, footerY, { align: 'right' });
             }
 
             await pdf.save();

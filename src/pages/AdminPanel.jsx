@@ -173,7 +173,6 @@ const AdminPanel = () => {
         }));
     };
 
-
     // Helper to update incidents
     const handleUpdateIncidents = (type, updatedList) => {
         updateSection('incidents', {
