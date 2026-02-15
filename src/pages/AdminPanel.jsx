@@ -252,13 +252,13 @@ const AdminPanel = () => {
                             <button
                                 onClick={handleManualSave}
                                 disabled={saveStatus === 'saving'}
-                                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-bold transition-all ${saveStatus === 'saved'
-                                    ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
-                                    : 'bg-brand-600 text-white shadow-md active:scale-95'
+                                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-lg ${saveStatus === 'saved'
+                                    ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-emerald-500/40 border-t border-white/20 border-b border-black/10'
+                                    : 'bg-gradient-to-br from-brand-400 via-brand-500 to-brand-700 text-white shadow-brand-500/40 hover:shadow-brand-500/60 hover:-translate-y-0.5 active:scale-95 border-t border-white/20 border-b-2 border-brand-800/20'
                                     }`}
                             >
                                 {saveStatus === 'saving' ? (
-                                    <><Cloud className="w-3 h-3 animate-pulse" /> Saving...</>
+                                    <><Cloud className="w-3 h-3 animate-bounce" /> Saving...</>
                                 ) : saveStatus === 'saved' ? (
                                     <><Check className="w-3 h-3" /> Saved!</>
                                 ) : (
@@ -399,27 +399,31 @@ const AdminPanel = () => {
                             <button
                                 onClick={handleManualSave}
                                 disabled={saveStatus === 'saving'}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 ${saveStatus === 'saved'
-                                    ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
-                                    : 'bg-brand-600 text-white hover:bg-brand-700 shadow-sm hover:shadow-md active:scale-95'
+                                className={`group relative overflow-hidden flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all duration-300 shadow-lg ${saveStatus === 'saved'
+                                    ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-emerald-500/40 border-t border-white/20 border-b border-black/10 scale-105'
+                                    : 'bg-gradient-to-br from-brand-400 via-brand-500 to-brand-700 text-white shadow-brand-500/40 hover:shadow-brand-500/60 hover:-translate-y-0.5 hover:scale-105 active:scale-95 border-t border-white/20 border-b-2 border-brand-800/20'
                                     }`}
                             >
-                                {saveStatus === 'saving' ? (
-                                    <>
-                                        <Cloud className="w-4 h-4 animate-bounce" />
-                                        Saving...
-                                    </>
-                                ) : saveStatus === 'saved' ? (
-                                    <>
-                                        <Check className="w-4 h-4" />
-                                        Saved Successfully
-                                    </>
-                                ) : (
-                                    <>
-                                        <Save className="w-4 h-4" />
-                                        Save Changes
-                                    </>
-                                )}
+                                {/* Shine Effect */}
+                                <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0"></div>
+                                <div className="relative z-10 flex items-center gap-2">
+                                    {saveStatus === 'saving' ? (
+                                        <>
+                                            <Cloud className="w-4 h-4 animate-bounce" />
+                                            Saving...
+                                        </>
+                                    ) : saveStatus === 'saved' ? (
+                                        <>
+                                            <Check className="w-4 h-4" />
+                                            Saved Successfully
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Save className="w-4 h-4" />
+                                            Save Changes
+                                        </>
+                                    )}
+                                </div>
                             </button>
                         </div>
                     </div>
