@@ -16,7 +16,7 @@ const Layout = ({ children }) => {
                     </div>
                     <div className="flex flex-col">
                         <h1 className="text-base md:text-lg font-bold text-slate-900 leading-tight tracking-tight">EHS Report</h1>
-                        <span className="text-[8px] md:text-[10px] uppercase tracking-wider text-slate-400 font-semibold hidden sm:block">Daily Monitor</span>
+                        <span className="text-[8px] md:text-[10px] uppercase tracking-wider text-slate-400 font-semibold hidden sm:block">Monthly EHS Site Report</span>
                     </div>
                 </div>
 
