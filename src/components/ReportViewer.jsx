@@ -908,6 +908,19 @@ const WebLayout = ({ data, month }) => {
                 </div>
             </div >
 
+            {/* Report Prepared By Footer */}
+            {
+                (data?.basicInfo?.preparedBy?.name || data?.basicInfo?.preparedBy?.designation) && (
+                    <div className="pt-8 pb-4 mt-8 border-t border-slate-200">
+                        <div className="flex flex-col gap-1">
+                            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Report Prepared by</p>
+                            <p className="text-sm font-bold text-slate-800">{data.basicInfo.preparedBy.name}</p>
+                            <p className="text-xs text-slate-500">{data.basicInfo.preparedBy.designation}</p>
+                        </div>
+                    </div>
+                )
+            }
+
             {/* Lightbox / Image Zoom Modal */}
             {
                 selectedImage && (

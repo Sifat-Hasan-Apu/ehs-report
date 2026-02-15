@@ -173,6 +173,17 @@ const AdminPanel = () => {
         }));
     };
 
+    const handlePreparedByChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            preparedBy: {
+                ...prev.preparedBy,
+                [name]: value
+            }
+        }));
+    };
+
     // Helper to update incidents
     const handleUpdateIncidents = (type, updatedList) => {
         updateSection('incidents', {
@@ -517,6 +528,34 @@ const AdminPanel = () => {
                                                 value={formData.manpower?.avgDaily || ''}
                                                 onChange={handleManpowerChange}
                                                 className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="pt-6 border-t border-slate-100">
+                                    <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4">Report Prepared By</h4>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-700">Name</label>
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                value={formData.preparedBy?.name || ''}
+                                                onChange={handlePreparedByChange}
+                                                className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all"
+                                                placeholder="e.g. John Doe"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-slate-700">Designation</label>
+                                            <input
+                                                type="text"
+                                                name="designation"
+                                                value={formData.preparedBy?.designation || ''}
+                                                onChange={handlePreparedByChange}
+                                                className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all"
+                                                placeholder="e.g. EHS Officer"
                                             />
                                         </div>
                                     </div>
